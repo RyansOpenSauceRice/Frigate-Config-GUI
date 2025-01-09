@@ -7,6 +7,7 @@ from ..config.config_manager import FrigateConfigManager
 from ..config.schema_validator import validate_config
 from .camera_config import CameraConfigWidget
 from .semantic_search import SemanticSearchWidget
+from .audio_config import AudioConfigWidget
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -52,6 +53,10 @@ class MainWindow(QMainWindow):
         # Add semantic search configuration tab
         self.semantic_search = SemanticSearchWidget(self.config_manager)
         self.tab_widget.addTab(self.semantic_search, "Semantic Search")
+
+        # Add audio configuration tab
+        self.audio_config = AudioConfigWidget(self.config_manager)
+        self.tab_widget.addTab(self.audio_config, "Audio Detection")
 
     def import_config(self):
         file_path, _ = QFileDialog.getOpenFileName(
