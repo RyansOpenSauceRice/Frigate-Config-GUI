@@ -63,4 +63,30 @@ frigate-config-gui/
 └── flatpak/
 ```
 
+## Reference Documentation
+
+### Official Frigate Documentation
+- Main Documentation: https://docs.frigate.video/
+- Configuration Reference: https://docs.frigate.video/configuration/reference
+- Configuration File Examples: https://docs.frigate.video/configuration/examples
+
+### Development References
+- GitHub Repository: https://github.com/blakeblackshear/frigate
+- Documentation Source: https://github.com/blakeblackshear/frigate/tree/dev/docs/docs
+
+## Important Notes
+
+### Documentation Usage
+- This project references and works with Frigate NVR configurations as specified in the official Frigate documentation
+- The official Frigate documentation should NOT be copied or uploaded to this repository
+- Users and contributors should always refer to the official Frigate documentation at https://docs.frigate.video/
+- This project aims to provide GUI tools for managing Frigate configurations while respecting the original project's documentation and licensing
+
+### Rate Limiting Considerations
+- When interacting with GitHub repositories for config management:
+  - Implement proper rate limit handling
+  - Cache responses where appropriate
+  - Minimize API calls by batching operations
+  - Provide clear feedback to users when rate limits are approaching
+
 Note: This specification will be updated as the project evolves and specific requirements for Frigate configuration files are discussed.
