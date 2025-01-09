@@ -55,6 +55,105 @@ class CameraConfigWidget(QWidget):
             self.camera_widgets.pop(widget)
             widget.deleteLater()
 
+    def show_rtsp_examples(self):
+        examples = {
+            "Reolink": {
+                "format": "rtsp://admin:password@192.168.1.10:554/h264Preview_01_main",
+                "notes": [
+                    "Default substream: change _01_main to _01_sub",
+                    "Some models use /h264Preview_01_ch01_main instead"
+                ]
+            },
+            "Amcrest": {
+                "format": "rtsp://admin:password@192.168.1.10:554/cam/realmonitor?channel=1&subtype=0",
+                "notes": [
+                    "subtype=0 is main stream, subtype=1 is substream",
+                    "Default port is 554"
+                ]
+            },
+            "Hikvision": {
+                "format": "rtsp://admin:password@192.168.1.10:554/Streaming/Channels/101",
+                "notes": [
+                    "101 = channel 1, main stream",
+                    "102 = channel 1, substream"
+                ]
+            }
+        }
+        
+        msg = QMessageBox()
+        msg.setWindowTitle("RTSP Stream Examples")
+        
+        text = "Common RTSP URL Formats:\n\n"
+        for brand, info in examples.items():
+            text += f"{brand}:\n"
+            text += f"Format: {info['format']}\n"
+            text += "Notes:\n"
+            for note in info['notes']:
+                text += f"- {note}\n"
+            text += "\n"
+            
+        text += "\nRemember to:\n"
+        text += "1. Replace admin:password with your camera credentials\n"
+        text += "2. Replace 192.168.1.10 with your camera's IP address\n"
+        text += "3. Adjust the stream type based on your needs"
+        
+        msg.setText(text)
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.exec()
+
+    def update_camera_template(self, model: str):
+        templates = {
+            "Reolink RLC-810A": {
+                "rtsp": "rtsp://admin:password@192.168.1.10:554/h264Preview_01_main",
+                "resolution": (2560, 1920),
+                "fps": 5
+            },
+            "Amcrest IP8M-2496EB": {
+                "rtsp": "rtsp://admin:password@192.168.1.10:554/cam/realmonitor?channel=1&subtype=0",
+                "resolution": (1920, 1080),
+                "fps": 5
+            },
+            "Hikvision DS-2CD2385G1": {
+                "rtsp": "rtsp://admin:password@192.168.1.10:554/Streaming/Channels/101",
+                "resolution": (1920, 1080),
+                "fps": 5
+            },
+            "Dahua IPC-HDW5831R-ZE": {
+                "rtsp": "rtsp://admin:password@192.168.1.10:554/cam/realmonitor?channel=1&subtype=0",
+                "resolution": (1920, 1080),
+                "fps": 5
+            }
+        }
+        
+        if model in templates:
+            template = templates[model]
+            self.rtsp_input.setPlaceholderText(template["rtsp"])
+            self.detect_width.setValue(template["resolution"][0])
+            self.detect_height.setValue(template["resolution"][1])
+            self.detect_fps.setValue(template["fps"])
+            
+            QMessageBox.information(
+                self,
+                "Camera Template Applied",
+                f"Applied template for {model}.\n\n"
+                "Remember to:\n"
+                "1. Update the IP address\n"
+                "2. Update the username/password\n"
+                "3. Adjust settings based on your needs"
+            )
+
+    def apply_resolution_preset(self, preset: str):
+        presets = {
+            "HD (1280×720) - Recommended": (1280, 720),
+            "Full HD (1920×1080)": (1920, 1080),
+            "Low (854×480)": (854, 480)
+        }
+        
+        if preset in presets:
+            width, height = presets[preset]
+            self.detect_width.setValue(width)
+            self.detect_height.setValue(height)
+
     def update_ui_from_config(self):
         # Clear existing widgets
         while self.scroll_layout.count() > 1:  # Keep the stretch
@@ -96,38 +195,135 @@ class CameraWidget(QFrame):
         # Camera configuration form
         form = QFormLayout()
 
-        # FFMPEG Input
+        # Camera Stream Settings
+        stream_group = QFrame()
+        stream_layout = QFormLayout(stream_group)
+
+        # Camera brand/model selection
+        self.camera_model = QComboBox()
+        self.camera_model.addItems([
+            "Select Camera Type...",
+            "Reolink RLC-810A",
+            "Amcrest IP8M-2496EB",
+            "Hikvision DS-2CD2385G1",
+            "Dahua IPC-HDW5831R-ZE",
+            "Generic RTSP Camera"
+        ])
+        self.camera_model.currentTextChanged.connect(self.update_camera_template)
+        stream_layout.addRow("Camera Model:", self.camera_model)
+
+        # RTSP Stream input with examples
         self.rtsp_input = QLineEdit()
-        self.rtsp_input.setPlaceholderText("rtsp://example.com/stream")
         if config.get('ffmpeg', {}).get('inputs'):
             self.rtsp_input.setText(config['ffmpeg']['inputs'][0].get('path', ''))
         self.rtsp_input.textChanged.connect(self.update_config)
-        form.addRow("RTSP Stream:", self.rtsp_input)
+        
+        # Add example button
+        example_btn = QPushButton("Show Examples")
+        example_btn.clicked.connect(self.show_rtsp_examples)
+        
+        rtsp_layout = QHBoxLayout()
+        rtsp_layout.addWidget(self.rtsp_input)
+        rtsp_layout.addWidget(example_btn)
+        
+        stream_layout.addRow("RTSP Stream:", rtsp_layout)
+        
+        # Add helpful tooltip
+        self.rtsp_input.setToolTip(
+            "The RTSP stream URL for your camera.\n\n"
+            "Common formats:\n"
+            "- Reolink: rtsp://admin:password@192.168.1.10:554/h264Preview_01_main\n"
+            "- Amcrest: rtsp://admin:password@192.168.1.10:554/cam/realmonitor?channel=1&subtype=0\n"
+            "- Hikvision: rtsp://admin:password@192.168.1.10:554/Streaming/Channels/101\n"
+            "- Dahua: rtsp://admin:password@192.168.1.10:554/cam/realmonitor?channel=1&subtype=0\n\n"
+            "Replace admin:password with your credentials and 192.168.1.10 with your camera's IP."
+        )
+        
+        form.addRow("Stream Settings:", stream_group)
 
-        # Detect settings
+        # Detection Settings with Recommendations
         detect_group = QFrame()
         detect_layout = QFormLayout(detect_group)
 
+        # Enable detection with explanation
         self.detect_enabled = QCheckBox()
         self.detect_enabled.setChecked(config.get('detect', {}).get('enabled', True))
+        self.detect_enabled.setToolTip(
+            "Enable object detection for this camera.\n"
+            "Required for motion detection and object tracking."
+        )
         detect_layout.addRow("Enable Detection:", self.detect_enabled)
 
+        # Resolution settings with recommendations
+        resolution_label = QLabel("Detection Resolution:")
+        resolution_label.setToolTip(
+            "The resolution used for object detection.\n\n"
+            "Recommendations:\n"
+            "- Higher resolution = better detection but more CPU usage\n"
+            "- 1280x720 is a good balance for most cases\n"
+            "- For distant objects, consider higher resolution\n"
+            "- For close objects, lower resolution may work fine"
+        )
+        detect_layout.addRow(resolution_label)
+
+        resolution_widget = QWidget()
+        resolution_layout = QHBoxLayout(resolution_widget)
+        
         self.detect_width = QSpinBox()
         self.detect_width.setRange(0, 4096)
         self.detect_width.setValue(config.get('detect', {}).get('width', 1280))
-        detect_layout.addRow("Width:", self.detect_width)
-
+        self.detect_width.setSuffix(" px")
+        
         self.detect_height = QSpinBox()
         self.detect_height.setRange(0, 4096)
         self.detect_height.setValue(config.get('detect', {}).get('height', 720))
-        detect_layout.addRow("Height:", self.detect_height)
+        self.detect_height.setSuffix(" px")
+        
+        resolution_layout.addWidget(self.detect_width)
+        resolution_layout.addWidget(QLabel("×"))
+        resolution_layout.addWidget(self.detect_height)
+        
+        # Add resolution presets
+        resolution_presets = QComboBox()
+        resolution_presets.addItems([
+            "Select preset...",
+            "HD (1280×720) - Recommended",
+            "Full HD (1920×1080)",
+            "Low (854×480)",
+            "Custom"
+        ])
+        resolution_presets.currentTextChanged.connect(self.apply_resolution_preset)
+        detect_layout.addRow("Resolution Preset:", resolution_presets)
+        detect_layout.addRow("Custom Resolution:", resolution_widget)
 
+        # FPS settings with explanation
+        fps_widget = QWidget()
+        fps_layout = QHBoxLayout(fps_widget)
+        
         self.detect_fps = QSpinBox()
         self.detect_fps.setRange(1, 30)
         self.detect_fps.setValue(config.get('detect', {}).get('fps', 5))
-        detect_layout.addRow("FPS:", self.detect_fps)
+        self.detect_fps.setSuffix(" FPS")
+        self.detect_fps.setToolTip(
+            "Frames per second for object detection.\n\n"
+            "Recommendations:\n"
+            "- 5 FPS is good for most cases\n"
+            "- Higher FPS = more CPU usage\n"
+            "- Lower FPS might miss fast-moving objects\n"
+            "- Consider your CPU capabilities"
+        )
+        
+        fps_layout.addWidget(self.detect_fps)
+        fps_layout.addStretch()
+        
+        detect_layout.addRow("Detection Speed:", fps_layout)
 
-        form.addRow("Detect Settings:", detect_group)
+        # Add a performance impact indicator
+        perf_label = QLabel("💡 Tip: Start with recommended values and adjust based on performance")
+        perf_label.setStyleSheet("color: #666; font-style: italic;")
+        detect_layout.addRow(perf_label)
+
+        form.addRow("Detection Settings:", detect_group)
 
         # Object detection settings
         objects_group = QFrame()
