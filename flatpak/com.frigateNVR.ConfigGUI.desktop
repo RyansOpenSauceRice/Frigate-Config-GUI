@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Frigate Config GUI
+Comment=GUI tool for configuring Frigate NVR
+Exec=frigate-config-gui
+Icon=com.frigateNVR.ConfigGUI
+Type=Application
+Categories=Utility;Settings;
+Keywords=frigate;nvr;configuration;
