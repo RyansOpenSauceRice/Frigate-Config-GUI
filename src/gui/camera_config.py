@@ -55,104 +55,7 @@ class CameraConfigWidget(QWidget):
             self.camera_widgets.pop(widget)
             widget.deleteLater()
 
-    def show_rtsp_examples(self):
-        examples = {
-            "Reolink": {
-                "format": "rtsp://admin:password@192.168.1.10:554/h264Preview_01_main",
-                "notes": [
-                    "Default substream: change _01_main to _01_sub",
-                    "Some models use /h264Preview_01_ch01_main instead"
-                ]
-            },
-            "Amcrest": {
-                "format": "rtsp://admin:password@192.168.1.10:554/cam/realmonitor?channel=1&subtype=0",
-                "notes": [
-                    "subtype=0 is main stream, subtype=1 is substream",
-                    "Default port is 554"
-                ]
-            },
-            "Hikvision": {
-                "format": "rtsp://admin:password@192.168.1.10:554/Streaming/Channels/101",
-                "notes": [
-                    "101 = channel 1, main stream",
-                    "102 = channel 1, substream"
-                ]
-            }
-        }
-        
-        msg = QMessageBox()
-        msg.setWindowTitle("RTSP Stream Examples")
-        
-        text = "Common RTSP URL Formats:\n\n"
-        for brand, info in examples.items():
-            text += f"{brand}:\n"
-            text += f"Format: {info['format']}\n"
-            text += "Notes:\n"
-            for note in info['notes']:
-                text += f"- {note}\n"
-            text += "\n"
-            
-        text += "\nRemember to:\n"
-        text += "1. Replace admin:password with your camera credentials\n"
-        text += "2. Replace 192.168.1.10 with your camera's IP address\n"
-        text += "3. Adjust the stream type based on your needs"
-        
-        msg.setText(text)
-        msg.setIcon(QMessageBox.Icon.Information)
-        msg.exec()
-
-    def update_camera_template(self, model: str):
-        templates = {
-            "Reolink RLC-810A": {
-                "rtsp": "rtsp://admin:password@192.168.1.10:554/h264Preview_01_main",
-                "resolution": (2560, 1920),
-                "fps": 5
-            },
-            "Amcrest IP8M-2496EB": {
-                "rtsp": "rtsp://admin:password@192.168.1.10:554/cam/realmonitor?channel=1&subtype=0",
-                "resolution": (1920, 1080),
-                "fps": 5
-            },
-            "Hikvision DS-2CD2385G1": {
-                "rtsp": "rtsp://admin:password@192.168.1.10:554/Streaming/Channels/101",
-                "resolution": (1920, 1080),
-                "fps": 5
-            },
-            "Dahua IPC-HDW5831R-ZE": {
-                "rtsp": "rtsp://admin:password@192.168.1.10:554/cam/realmonitor?channel=1&subtype=0",
-                "resolution": (1920, 1080),
-                "fps": 5
-            }
-        }
-        
-        if model in templates:
-            template = templates[model]
-            self.rtsp_input.setPlaceholderText(template["rtsp"])
-            self.detect_width.setValue(template["resolution"][0])
-            self.detect_height.setValue(template["resolution"][1])
-            self.detect_fps.setValue(template["fps"])
-            
-            QMessageBox.information(
-                self,
-                "Camera Template Applied",
-                f"Applied template for {model}.\n\n"
-                "Remember to:\n"
-                "1. Update the IP address\n"
-                "2. Update the username/password\n"
-                "3. Adjust settings based on your needs"
-            )
-
-    def apply_resolution_preset(self, preset: str):
-        presets = {
-            "HD (1280×720) - Recommended": (1280, 720),
-            "Full HD (1920×1080)": (1920, 1080),
-            "Low (854×480)": (854, 480)
-        }
-        
-        if preset in presets:
-            width, height = presets[preset]
-            self.detect_width.setValue(width)
-            self.detect_height.setValue(height)
+    # Removed camera template and example methods to focus on core functionality
 
     def update_ui_from_config(self):
         # Clear existing widgets
@@ -195,51 +98,54 @@ class CameraWidget(QFrame):
         # Camera configuration form
         form = QFormLayout()
 
-        # Camera Stream Settings
-        stream_group = QFrame()
-        stream_layout = QFormLayout(stream_group)
+        # Required Fields Group
+        required_group = QFrame()
+        required_layout = QFormLayout(required_group)
 
-        # Camera brand/model selection
-        self.camera_model = QComboBox()
-        self.camera_model.addItems([
-            "Select Camera Type...",
-            "Reolink RLC-810A",
-            "Amcrest IP8M-2496EB",
-            "Hikvision DS-2CD2385G1",
-            "Dahua IPC-HDW5831R-ZE",
-            "Generic RTSP Camera"
-        ])
-        self.camera_model.currentTextChanged.connect(self.update_camera_template)
-        stream_layout.addRow("Camera Model:", self.camera_model)
-
-        # RTSP Stream input with examples
+        # RTSP Stream input (Required)
         self.rtsp_input = QLineEdit()
         if config.get('ffmpeg', {}).get('inputs'):
             self.rtsp_input.setText(config['ffmpeg']['inputs'][0].get('path', ''))
+        self.rtsp_input.setPlaceholderText("rtsp://username:password@ip:port/path")
         self.rtsp_input.textChanged.connect(self.update_config)
-        
-        # Add example button
-        example_btn = QPushButton("Show Examples")
-        example_btn.clicked.connect(self.show_rtsp_examples)
-        
-        rtsp_layout = QHBoxLayout()
-        rtsp_layout.addWidget(self.rtsp_input)
-        rtsp_layout.addWidget(example_btn)
-        
-        stream_layout.addRow("RTSP Stream:", rtsp_layout)
-        
-        # Add helpful tooltip
         self.rtsp_input.setToolTip(
-            "The RTSP stream URL for your camera.\n\n"
-            "Common formats:\n"
-            "- Reolink: rtsp://admin:password@192.168.1.10:554/h264Preview_01_main\n"
-            "- Amcrest: rtsp://admin:password@192.168.1.10:554/cam/realmonitor?channel=1&subtype=0\n"
-            "- Hikvision: rtsp://admin:password@192.168.1.10:554/Streaming/Channels/101\n"
-            "- Dahua: rtsp://admin:password@192.168.1.10:554/cam/realmonitor?channel=1&subtype=0\n\n"
-            "Replace admin:password with your credentials and 192.168.1.10 with your camera's IP."
+            "Required: The RTSP stream URL for your camera\n"
+            "Format: rtsp://username:password@ip:port/path"
         )
-        
-        form.addRow("Stream Settings:", stream_group)
+        required_layout.addRow("RTSP Stream URL*:", self.rtsp_input)
+
+        # Stream Roles (Required)
+        roles_widget = QWidget()
+        roles_layout = QHBoxLayout(roles_widget)
+        roles_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.role_detect = QCheckBox("detect")
+        self.role_record = QCheckBox("record")
+        self.role_audio = QCheckBox("audio")
+
+        # Set initial values from config
+        if config.get('ffmpeg', {}).get('inputs'):
+            roles = config['ffmpeg']['inputs'][0].get('roles', [])
+            self.role_detect.setChecked('detect' in roles)
+            self.role_record.setChecked('record' in roles)
+            self.role_audio.setChecked('audio' in roles)
+
+        roles_layout.addWidget(self.role_detect)
+        roles_layout.addWidget(self.role_record)
+        roles_layout.addWidget(self.role_audio)
+        roles_layout.addStretch()
+
+        roles_label = QLabel("Stream Roles*:")
+        roles_label.setToolTip(
+            "Required: Select at least one role for this stream\n"
+            "- detect: Use this stream for object detection\n"
+            "- record: Use this stream for recordings\n"
+            "- audio: Use this stream for audio"
+        )
+        required_layout.addRow(roles_label, roles_widget)
+
+        # Add required fields group to form
+        form.addRow(required_group)
 
         # Detection Settings with Recommendations
         detect_group = QFrame()
@@ -359,32 +265,45 @@ class CameraWidget(QFrame):
         self.threshold.valueChanged.connect(self.update_config)
 
     def update_config(self):
+        """Update the configuration with the current values from the GUI."""
         if not self.name_edit.text():
             return
 
+        # Collect selected roles
+        roles = []
+        if self.role_detect.isChecked():
+            roles.append('detect')
+        if self.role_record.isChecked():
+            roles.append('record')
+        if self.role_audio.isChecked():
+            roles.append('audio')
+
+        # Basic required configuration
         config = {
             'ffmpeg': {
                 'inputs': [{
                     'path': self.rtsp_input.text(),
-                    'roles': ['detect', 'record']
+                    'roles': roles
                 }]
-            },
-            'detect': {
-                'enabled': self.detect_enabled.isChecked(),
-                'width': self.detect_width.value(),
-                'height': self.detect_height.value(),
-                'fps': self.detect_fps.value()
-            },
-            'objects': {
-                'track': ['person'],
-                'filters': {
-                    'person': {
-                        'min_score': self.min_score.value(),
-                        'threshold': self.threshold.value()
-                    }
-                }
             }
         }
+
+        # Validate required fields
+        if not config['ffmpeg']['inputs'][0]['path']:
+            QMessageBox.warning(
+                self,
+                "Required Field Missing",
+                "RTSP Stream URL is required."
+            )
+            return
+
+        if not roles:
+            QMessageBox.warning(
+                self,
+                "Required Field Missing",
+                "At least one stream role must be selected."
+            )
+            return
 
         try:
             self.config_manager.update_camera(self.name_edit.text(), config)
