@@ -1,0 +1,31 @@
+# This is an example configuration file for reference
+# For more examples, visit: https://docs.frigate.video/configuration/examples
+
+mqtt:
+  host: mqtt.local
+  topic_prefix: frigate
+  client_id: frigate
+
+cameras:
+  back:
+    ffmpeg:
+      inputs:
+        - path: rtsp://example.com/back
+          roles:
+            - detect
+            - record
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+    snapshots:
+      enabled: true
+      timestamp: false
+    objects:
+      track:
+        - person
+        - car
+      filters:
+        person:
+          min_score: 0.7
+          threshold: 0.7
