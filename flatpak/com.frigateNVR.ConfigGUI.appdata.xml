@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.frigateNVR.ConfigGUI</id>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Frigate Config GUI</name>
+  <summary>GUI tool for configuring Frigate NVR</summary>
+  <description>
+    <p>
+      A user-friendly graphical interface for creating and editing Frigate NVR configuration files.
+      Simplifies the process of setting up cameras, detection parameters, and other Frigate features
+      without manually editing YAML files.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Easy camera configuration</li>
+      <li>Semantic search setup</li>
+      <li>Real-time validation</li>
+      <li>Import/export configuration files</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">com.frigateNVR.ConfigGUI.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main configuration window</caption>
+      <image>https://raw.githubusercontent.com/YourRepo/Frigate-Config-GUI/main/screenshots/main.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://github.com/YourRepo/Frigate-Config-GUI</url>
+  <developer_name>OpenHands</developer_name>
+  <update_contact>openhands@all-hands.dev</update_contact>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="0.1.0" date="2024-01-09">
+      <description>
+        <p>Initial release with basic configuration capabilities:</p>
+        <ul>
+          <li>Camera configuration</li>
+          <li>Semantic search setup</li>
+          <li>Basic validation</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+</component>
