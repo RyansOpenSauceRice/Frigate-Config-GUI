@@ -1,0 +1,3 @@
+pyyaml>=6.0.1
+pytest>=7.4.0
+PyQt6>=6.6.1  # For the GUI implementation
