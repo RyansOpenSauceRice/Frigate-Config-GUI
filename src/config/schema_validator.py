@@ -74,8 +74,33 @@ class CameraConfig(BaseModel):
     enabled: bool = True
     best_image_timeout: int = 60
 
+class OpenAIConfig(BaseModel):
+    api_key: str
+    model: str = "text-embedding-ada-002"
+
+class SemanticSearchConfig(BaseModel):
+    enabled: bool = False
+    model: str = "all-MiniLM-L6-v2"
+    provider: str = "transformers"
+    batch_size: int = 50
+    refresh_interval: int = 60
+    openai: Optional[OpenAIConfig] = None
+
+    @validator('provider')
+    def validate_provider(cls, v):
+        if v.lower() not in ['transformers', 'openai']:
+            raise ValueError('Provider must be either "transformers" or "openai"')
+        return v.lower()
+
+    @validator('openai')
+    def validate_openai(cls, v, values):
+        if values.get('provider') == 'openai' and not v:
+            raise ValueError('OpenAI configuration is required when using OpenAI provider')
+        return v
+
 class FrigateConfig(BaseModel):
     cameras: Dict[str, CameraConfig]
+    semantic_search: Optional[SemanticSearchConfig] = None
 
 def validate_config(config: Dict) -> tuple[bool, Optional[str]]:
     """

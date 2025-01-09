@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt
 from ..config.config_manager import FrigateConfigManager
 from ..config.schema_validator import validate_config
 from .camera_config import CameraConfigWidget
+from .semantic_search import SemanticSearchWidget
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -47,6 +48,10 @@ class MainWindow(QMainWindow):
         # Add camera configuration tab
         self.camera_config = CameraConfigWidget(self.config_manager)
         self.tab_widget.addTab(self.camera_config, "Cameras")
+
+        # Add semantic search configuration tab
+        self.semantic_search = SemanticSearchWidget(self.config_manager)
+        self.tab_widget.addTab(self.semantic_search, "Semantic Search")
 
     def import_config(self):
         file_path, _ = QFileDialog.getOpenFileName(
