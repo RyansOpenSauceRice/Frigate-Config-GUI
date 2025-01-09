@@ -98,9 +98,26 @@ class SemanticSearchConfig(BaseModel):
             raise ValueError('OpenAI configuration is required when using OpenAI provider')
         return v
 
+class AudioFilter(BaseModel):
+    threshold: float = 0.8
+
+class AudioConfig(BaseModel):
+    enabled: bool = False
+    max_not_heard: int = 30
+    min_volume: int = 500
+    listen: List[str] = Field(default_factory=lambda: [
+        "bark",
+        "fire_alarm",
+        "scream",
+        "speech",
+        "yell"
+    ])
+    filters: Dict[str, AudioFilter] = Field(default_factory=dict)
+
 class FrigateConfig(BaseModel):
     cameras: Dict[str, CameraConfig]
     semantic_search: Optional[SemanticSearchConfig] = None
+    audio: Optional[AudioConfig] = None
 
 def validate_config(config: Dict) -> tuple[bool, Optional[str]]:
     """
