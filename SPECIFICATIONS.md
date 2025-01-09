@@ -3,6 +3,10 @@
 ## Project Overview
 A desktop GUI application designed to simplify the configuration of Frigate NVR (Network Video Recorder) config files. The application will provide a user-friendly interface for creating, editing, and managing Frigate configuration files, eliminating the need for manual YAML editing.
 
+### Integration with Existing Frigate Features
+- Zone editing will be handled through Frigate's existing visual tools
+- This application will focus on configuration aspects not already well-served by the main Frigate UI
+
 ## Technical Stack
 - **Language:** Python
 - **Development Approach:** Test Driven Development (TDD)
