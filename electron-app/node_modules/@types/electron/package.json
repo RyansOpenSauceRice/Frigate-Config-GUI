@@ -1,0 +1,12 @@
+{
+    "name": "@types/electron",
+    "version": "1.6.12",
+    "description": "Stub TypeScript definitions entry for electron, which provides its own types definitions",
+    "main": "",
+    "scripts": {},
+    "license": "MIT",
+    "dependencies": {
+        "electron": "*"
+    },
+    "deprecated": "This is a stub types definition. electron provides its own type definitions, so you do not need this installed."
+}
