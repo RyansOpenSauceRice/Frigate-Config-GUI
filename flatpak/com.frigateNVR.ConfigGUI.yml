@@ -21,8 +21,8 @@ modules:
         --prefix=${FLATPAK_DEST} "PyQt6" --no-build-isolation
     sources:
       - type: file
-        url: https://files.pythonhosted.org/packages/PyQt6-6.6.1.tar.gz
-        sha256: actual_sha256_here
+        url: https://files.pythonhosted.org/packages/8c/2b/6fe0409501798abc780a70cab48c39599742ab5a8168e682107eaab78fca/PyQt6-6.6.1.tar.gz
+        sha256: 9f158aa29d205142c56f0f35d07784b8df0be28378d20a97bcda8bd64ffd0379
 
   - name: python3-dependencies
     buildsystem: simple
@@ -31,11 +31,11 @@ modules:
         --prefix=${FLATPAK_DEST} pyyaml pydantic
     sources:
       - type: file
-        url: https://files.pythonhosted.org/packages/pyyaml-latest.tar.gz
-        sha256: actual_sha256_here
+        url: https://files.pythonhosted.org/packages/54/ed/79a089b6be93607fa5cdaedf301d7dfb23af5f25c398d5ead2525b063e17/pyyaml-6.0.2.tar.gz
+        sha256: d584d9ec91ad65861cc08d42e834324ef890a082e591037abe114850ff7bbc3e
       - type: file
-        url: https://files.pythonhosted.org/packages/pydantic-latest.tar.gz
-        sha256: actual_sha256_here
+        url: https://files.pythonhosted.org/packages/6a/c7/ca334c2ef6f2e046b1144fe4bb2a5da8a4c574e7f2ebf7e16b34a6a2fa92/pydantic-2.10.5.tar.gz
+        sha256: 278b38dbbaec562011d659ee05f63346951b3a248a6f3642e1bc68894ea2b4ff
 
   - name: frigate-config-gui
     buildsystem: simple
