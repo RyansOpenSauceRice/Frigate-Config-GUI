@@ -8,6 +8,7 @@ from ..config.schema_validator import validate_config
 from .camera_config import CameraConfigWidget
 from .semantic_search import SemanticSearchWidget
 from .audio_config import AudioConfigWidget
+from .mqtt_config import MQTTConfigWidget
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -58,6 +59,10 @@ class MainWindow(QMainWindow):
         self.audio_config = AudioConfigWidget(self.config_manager)
         self.tab_widget.addTab(self.audio_config, "Audio Detection")
 
+        # Add MQTT configuration tab
+        self.mqtt_config = MQTTConfigWidget(self.config_manager)
+        self.tab_widget.addTab(self.mqtt_config, "MQTT")
+
     def import_config(self):
         file_path, _ = QFileDialog.getOpenFileName(
             self,
@@ -77,6 +82,7 @@ class MainWindow(QMainWindow):
                     )
                 else:
                     self.camera_config.update_ui_from_config()
+                    self.mqtt_config.update_ui_from_config()
                     QMessageBox.information(
                         self,
                         "Success",
