@@ -253,6 +253,10 @@ class CameraWidget(QFrame):
 
         form.addRow("Object Detection:", objects_group)
 
+        # Add recording settings
+        record_group = self.create_recording_section(config)
+        form.addRow("Recording:", record_group)
+
         # Add ONVIF settings
         onvif_group = self.create_onvif_section(config)
         form.addRow("ONVIF Settings:", onvif_group)
@@ -271,6 +275,14 @@ class CameraWidget(QFrame):
         self.detect_fps.valueChanged.connect(self.update_config)
         self.min_score.valueChanged.connect(self.update_config)
         self.threshold.valueChanged.connect(self.update_config)
+        # Connect recording inputs
+        self.record_enabled.stateChanged.connect(self.update_config)
+        self.record_retain_days.valueChanged.connect(self.update_config)
+        self.record_retain_mode.currentTextChanged.connect(self.update_config)
+        self.record_sync.stateChanged.connect(self.update_config)
+        self.event_retain_days.valueChanged.connect(self.update_config)
+        self.event_retain_mode.currentTextChanged.connect(self.update_config)
+        self.timelapse_args.textChanged.connect(self.update_config)
         # Connect ONVIF inputs
         self.onvif_host.textChanged.connect(self.update_config)
         self.onvif_port.valueChanged.connect(self.update_config)
@@ -286,6 +298,122 @@ class CameraWidget(QFrame):
         self.track_person.stateChanged.connect(self.update_config)
         self.track_vehicle.stateChanged.connect(self.update_config)
         self.track_animal.stateChanged.connect(self.update_config)
+
+    def create_recording_section(self, config: Dict) -> QFrame:
+        """Create the recording configuration section."""
+        group = QFrame()
+        layout = QFormLayout(group)
+
+        # Get recording config
+        record_config = config.get('record', {})
+
+        # Enable recording
+        self.record_enabled = QCheckBox()
+        self.record_enabled.setChecked(record_config.get('enabled', False))
+        self.record_enabled.setToolTip(
+            "Enable/disable recording for this camera.\n"
+            "Recordings are stored at /media/frigate/recordings"
+        )
+        layout.addRow("Enable Recording:", self.record_enabled)
+
+        # Continuous recording settings
+        retain_group = QFrame()
+        retain_layout = QFormLayout(retain_group)
+
+        # Retain days
+        self.record_retain_days = QDoubleSpinBox()
+        self.record_retain_days.setRange(0, 365)
+        self.record_retain_days.setDecimals(1)
+        self.record_retain_days.setSingleStep(0.5)
+        self.record_retain_days.setValue(record_config.get('retain', {}).get('days', 0))
+        self.record_retain_days.setSuffix(" days")
+        self.record_retain_days.setToolTip(
+            "Number of days to retain continuous recordings.\n"
+            "Set to 0 to only keep event recordings.\n"
+            "Supports decimals (e.g., 0.5 for 12 hours)"
+        )
+        retain_layout.addRow("Retain Period:", self.record_retain_days)
+
+        # Retain mode
+        self.record_retain_mode = QComboBox()
+        self.record_retain_mode.addItems(['all', 'motion', 'active_objects'])
+        self.record_retain_mode.setCurrentText(record_config.get('retain', {}).get('mode', 'all'))
+        self.record_retain_mode.setToolTip(
+            "Recording retention mode:\n"
+            "- all: Keep all recordings for the retention period\n"
+            "- motion: Only keep segments with motion\n"
+            "- active_objects: Only keep segments with active objects"
+        )
+        retain_layout.addRow("Retain Mode:", self.record_retain_mode)
+
+        layout.addRow("Continuous Recording:", retain_group)
+
+        # Event recording settings
+        event_group = QFrame()
+        event_layout = QFormLayout(event_group)
+
+        # Event retain days
+        self.event_retain_days = QDoubleSpinBox()
+        self.event_retain_days.setRange(0, 365)
+        self.event_retain_days.setDecimals(1)
+        self.event_retain_days.setSingleStep(0.5)
+        self.event_retain_days.setValue(record_config.get('events', {}).get('retain', {}).get('default', 10))
+        self.event_retain_days.setSuffix(" days")
+        self.event_retain_days.setToolTip(
+            "Number of days to retain event recordings.\n"
+            "Supports decimals (e.g., 0.5 for 12 hours)"
+        )
+        event_layout.addRow("Event Retain Period:", self.event_retain_days)
+
+        # Event retain mode
+        self.event_retain_mode = QComboBox()
+        self.event_retain_mode.addItems(['all', 'motion', 'active_objects'])
+        self.event_retain_mode.setCurrentText(
+            record_config.get('events', {}).get('retain', {}).get('mode', 'active_objects')
+        )
+        self.event_retain_mode.setToolTip(
+            "Event recording retention mode:\n"
+            "- all: Keep all segments during events\n"
+            "- motion: Keep segments with motion during events\n"
+            "- active_objects: Keep segments with active objects"
+        )
+        event_layout.addRow("Event Retain Mode:", self.event_retain_mode)
+
+        layout.addRow("Event Recording:", event_group)
+
+        # Advanced settings
+        advanced_group = QFrame()
+        advanced_layout = QFormLayout(advanced_group)
+
+        # Sync recordings
+        self.record_sync = QCheckBox()
+        self.record_sync.setChecked(record_config.get('sync_recordings', False))
+        self.record_sync.setToolTip(
+            "Enable recording sync with disk.\n"
+            "WARNING: Uses considerable CPU resources.\n"
+            "Only enable when necessary."
+        )
+        advanced_layout.addRow("Sync Recordings:", self.record_sync)
+
+        # Timelapse args
+        self.timelapse_args = QLineEdit()
+        self.timelapse_args.setText(record_config.get('export', {}).get('timelapse_args', ''))
+        self.timelapse_args.setPlaceholderText("-vf setpts=PTS/25 -r 30")
+        self.timelapse_args.setToolTip(
+            "FFmpeg arguments for timelapse export.\n"
+            "Default: 25x speed-up with 30 FPS\n"
+            "Example: -vf setpts=PTS/60 -r 25 for 60x speed"
+        )
+        advanced_layout.addRow("Timelapse Args:", self.timelapse_args)
+
+        layout.addRow("Advanced Settings:", advanced_group)
+
+        # Add a note about storage
+        note = QLabel("💡 Note: Recordings are stored at /media/frigate/recordings in UTC time")
+        note.setStyleSheet("color: #666; font-style: italic;")
+        layout.addRow(note)
+
+        return group
 
     def create_onvif_section(self, config: Dict) -> QFrame:
         """Create the ONVIF configuration section."""
@@ -470,6 +598,31 @@ class CameraWidget(QFrame):
                 }]
             }
         }
+
+        # Add recording configuration if enabled
+        if self.record_enabled.isChecked():
+            record_config = {
+                'enabled': True,
+                'retain': {
+                    'days': self.record_retain_days.value(),
+                    'mode': self.record_retain_mode.currentText()
+                },
+                'events': {
+                    'retain': {
+                        'default': self.event_retain_days.value(),
+                        'mode': self.event_retain_mode.currentText()
+                    }
+                },
+                'sync_recordings': self.record_sync.isChecked()
+            }
+
+            # Add timelapse args if provided
+            if self.timelapse_args.text():
+                record_config['export'] = {
+                    'timelapse_args': self.timelapse_args.text()
+                }
+
+            config['record'] = record_config
 
         # Add ONVIF configuration
         onvif_config = {}
