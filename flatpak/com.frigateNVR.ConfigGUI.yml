@@ -18,11 +18,17 @@ modules:
     buildsystem: simple
     build-commands:
       - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
-        --prefix=${FLATPAK_DEST} "PyQt6" --no-build-isolation
+        --prefix=${FLATPAK_DEST} "PyQt6" "PyQt6-sip" "sip" --no-build-isolation
     sources:
       - type: file
         url: https://files.pythonhosted.org/packages/8c/2b/6fe0409501798abc780a70cab48c39599742ab5a8168e682107eaab78fca/PyQt6-6.6.1.tar.gz
         sha256: 9f158aa29d205142c56f0f35d07784b8df0be28378d20a97bcda8bd64ffd0379
+      - type: file
+        url: https://files.pythonhosted.org/packages/e5/99/c56dd9e3d750c4c8cd7d2a2c58f0f4a8f0c9b6a9e74f6a8c5c8ab0a3c9e/PyQt6_sip-13.6.0.tar.gz
+        sha256: 2486e1588071943d4f6657ba09096dc9fffd2322ad2c30041e78ea3f037b5778
+      - type: file
+        url: https://files.pythonhosted.org/packages/3c/56/c85b2c8ba8c3b5b8e6f1a1cf6e8b7c47d5c36e5b431a41e3b075acd5d86/sip-6.8.3.tar.gz
+        sha256: 888547b018bb24c36aded519e93d3e513d4c6aa0ba55b7cc1affbd45cf10762c
 
   - name: python3-dependencies
     buildsystem: simple
