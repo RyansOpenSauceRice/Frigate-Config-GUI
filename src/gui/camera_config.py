@@ -253,6 +253,14 @@ class CameraWidget(QFrame):
 
         form.addRow("Object Detection:", objects_group)
 
+        # Add ONVIF settings
+        onvif_group = self.create_onvif_section(config)
+        form.addRow("ONVIF Settings:", onvif_group)
+
+        # Add autotracking settings
+        autotrack_group = self.create_autotracking_section(config)
+        form.addRow("Camera Autotracking:", autotrack_group)
+
         # Add form to layout
         layout.addLayout(form)
 
@@ -263,6 +271,181 @@ class CameraWidget(QFrame):
         self.detect_fps.valueChanged.connect(self.update_config)
         self.min_score.valueChanged.connect(self.update_config)
         self.threshold.valueChanged.connect(self.update_config)
+        # Connect ONVIF inputs
+        self.onvif_host.textChanged.connect(self.update_config)
+        self.onvif_port.valueChanged.connect(self.update_config)
+        self.onvif_username.textChanged.connect(self.update_config)
+        self.onvif_password.textChanged.connect(self.update_config)
+        # Connect autotracking inputs
+        self.autotrack_enabled.stateChanged.connect(self.update_config)
+        self.calibrate_startup.stateChanged.connect(self.update_config)
+        self.zoom_mode.currentTextChanged.connect(self.update_config)
+        self.zoom_factor.valueChanged.connect(self.update_config)
+        self.return_preset.textChanged.connect(self.update_config)
+        self.timeout.valueChanged.connect(self.update_config)
+        self.track_person.stateChanged.connect(self.update_config)
+        self.track_vehicle.stateChanged.connect(self.update_config)
+        self.track_animal.stateChanged.connect(self.update_config)
+
+    def create_onvif_section(self, config: Dict) -> QFrame:
+        """Create the ONVIF configuration section."""
+        group = QFrame()
+        layout = QFormLayout(group)
+
+        # Get ONVIF config
+        onvif_config = config.get('onvif', {})
+
+        # Host
+        self.onvif_host = QLineEdit()
+        self.onvif_host.setText(onvif_config.get('host', ''))
+        self.onvif_host.setPlaceholderText("0.0.0.0")
+        self.onvif_host.setToolTip(
+            "Required: Host/IP address of the camera for ONVIF connection.\n"
+            "Example: 192.168.1.100"
+        )
+        layout.addRow("ONVIF Host*:", self.onvif_host)
+
+        # Port
+        self.onvif_port = QSpinBox()
+        self.onvif_port.setRange(1, 65535)
+        self.onvif_port.setValue(onvif_config.get('port', 8000))
+        self.onvif_port.setToolTip(
+            "Optional: ONVIF port for the camera.\n"
+            "Default: 8000"
+        )
+        layout.addRow("ONVIF Port:", self.onvif_port)
+
+        # Username
+        self.onvif_username = QLineEdit()
+        self.onvif_username.setText(onvif_config.get('user', ''))
+        self.onvif_username.setPlaceholderText("admin")
+        self.onvif_username.setToolTip(
+            "Optional: Username for ONVIF login.\n"
+            "Note: Some devices require admin access for ONVIF."
+        )
+        layout.addRow("Username:", self.onvif_username)
+
+        # Password
+        self.onvif_password = QLineEdit()
+        self.onvif_password.setText(onvif_config.get('password', ''))
+        self.onvif_password.setPlaceholderText("admin")
+        self.onvif_password.setEchoMode(QLineEdit.EchoMode.Password)
+        self.onvif_password.setToolTip(
+            "Optional: Password for ONVIF login."
+        )
+        layout.addRow("Password:", self.onvif_password)
+
+        # Add a note about ONVIF requirements
+        note = QLabel("💡 Note: ONVIF settings are required for autotracking")
+        note.setStyleSheet("color: #666; font-style: italic;")
+        layout.addRow(note)
+
+        return group
+
+    def create_autotracking_section(self, config: Dict) -> QFrame:
+        """Create the autotracking configuration section."""
+        group = QFrame()
+        layout = QFormLayout(group)
+
+        # Get autotracking config
+        onvif_config = config.get('onvif', {})
+        autotrack_config = onvif_config.get('autotracking', {})
+
+        # Enable autotracking
+        self.autotrack_enabled = QCheckBox()
+        self.autotrack_enabled.setChecked(autotrack_config.get('enabled', False))
+        self.autotrack_enabled.setToolTip(
+            "Enable/disable object autotracking.\n"
+            "Requires an ONVIF-capable PTZ camera that supports relative movement."
+        )
+        layout.addRow("Enable Autotracking:", self.autotrack_enabled)
+
+        # Calibrate on startup
+        self.calibrate_startup = QCheckBox()
+        self.calibrate_startup.setChecked(autotrack_config.get('calibrate_on_startup', False))
+        self.calibrate_startup.setToolTip(
+            "Calibrate the camera on startup.\n"
+            "A calibration will move the PTZ in increments and measure movement time.\n"
+            "The results help estimate tracked object positions after camera moves.\n"
+            "Set to False after first calibration to preserve movement weights."
+        )
+        layout.addRow("Calibrate on Startup:", self.calibrate_startup)
+
+        # Zooming mode
+        self.zoom_mode = QComboBox()
+        self.zoom_mode.addItems(['disabled', 'absolute', 'relative'])
+        self.zoom_mode.setCurrentText(autotrack_config.get('zooming', 'disabled'))
+        self.zoom_mode.setToolTip(
+            "Zooming mode for autotracking:\n"
+            "- disabled: pan/tilt only, no zoom\n"
+            "- absolute: separate zoom movements (most cameras)\n"
+            "- relative: concurrent pan/tilt/zoom (some cameras)"
+        )
+        layout.addRow("Zooming Mode:", self.zoom_mode)
+
+        # Zoom factor
+        self.zoom_factor = QDoubleSpinBox()
+        self.zoom_factor.setRange(0.1, 0.75)
+        self.zoom_factor.setSingleStep(0.05)
+        self.zoom_factor.setValue(autotrack_config.get('zoom_factor', 0.3))
+        self.zoom_factor.setToolTip(
+            "Zoom factor for autotracking (0.1 to 0.75).\n"
+            "Lower: more scene visible around tracked object\n"
+            "Higher: more zoom on object (may lose tracking)\n"
+            "Default 0.3 is recommended for most cases"
+        )
+        layout.addRow("Zoom Factor:", self.zoom_factor)
+
+        # Objects to track
+        self.track_objects = QWidget()
+        track_layout = QHBoxLayout(self.track_objects)
+        track_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.track_person = QCheckBox("person")
+        self.track_vehicle = QCheckBox("vehicle")
+        self.track_animal = QCheckBox("animal")
+
+        track_objects = autotrack_config.get('track', ['person'])
+        self.track_person.setChecked('person' in track_objects)
+        self.track_vehicle.setChecked('vehicle' in track_objects)
+        self.track_animal.setChecked('animal' in track_objects)
+
+        track_layout.addWidget(self.track_person)
+        track_layout.addWidget(self.track_vehicle)
+        track_layout.addWidget(self.track_animal)
+        track_layout.addStretch()
+
+        track_label = QLabel("Objects to Track:")
+        track_label.setToolTip("Select which types of objects to autotrack")
+        layout.addRow(track_label, self.track_objects)
+
+        # Return preset
+        self.return_preset = QLineEdit()
+        self.return_preset.setText(autotrack_config.get('return_preset', 'home'))
+        self.return_preset.setPlaceholderText("home")
+        self.return_preset.setToolTip(
+            "Name of ONVIF preset to return to when tracking ends.\n"
+            "Must be configured in your camera's firmware."
+        )
+        layout.addRow("Return Preset*:", self.return_preset)
+
+        # Timeout
+        self.timeout = QSpinBox()
+        self.timeout.setRange(1, 300)
+        self.timeout.setValue(autotrack_config.get('timeout', 10))
+        self.timeout.setSuffix(" seconds")
+        self.timeout.setToolTip(
+            "Seconds to delay before returning to preset position\n"
+            "after tracking has ended."
+        )
+        layout.addRow("Return Timeout:", self.timeout)
+
+        # Add a note about ONVIF requirements
+        note = QLabel("💡 Note: Requires ONVIF-capable PTZ camera with relative movement support")
+        note.setStyleSheet("color: #666; font-style: italic;")
+        layout.addRow(note)
+
+        return group
 
     def update_config(self):
         """Update the configuration with the current values from the GUI."""
@@ -287,6 +470,61 @@ class CameraWidget(QFrame):
                 }]
             }
         }
+
+        # Add ONVIF configuration
+        onvif_config = {}
+        
+        # Add ONVIF host if provided
+        if self.onvif_host.text():
+            onvif_config.update({
+                'host': self.onvif_host.text(),
+                'port': self.onvif_port.value(),
+                'user': self.onvif_username.text(),
+                'password': self.onvif_password.text()
+            })
+
+        # Add autotracking configuration if enabled
+        if self.autotrack_enabled.isChecked():
+            # Validate ONVIF host when autotracking is enabled
+            if not self.onvif_host.text():
+                QMessageBox.warning(
+                    self,
+                    "Required Field Missing",
+                    "ONVIF Host is required when autotracking is enabled."
+                )
+                return
+
+            # Collect tracked objects
+            track_objects = []
+            if self.track_person.isChecked():
+                track_objects.append('person')
+            if self.track_vehicle.isChecked():
+                track_objects.append('vehicle')
+            if self.track_animal.isChecked():
+                track_objects.append('animal')
+
+            # Validate return preset
+            if not self.return_preset.text():
+                QMessageBox.warning(
+                    self,
+                    "Required Field Missing",
+                    "Return Preset is required when autotracking is enabled."
+                )
+                return
+
+            onvif_config['autotracking'] = {
+                'enabled': True,
+                'calibrate_on_startup': self.calibrate_startup.isChecked(),
+                'zooming': self.zoom_mode.currentText(),
+                'zoom_factor': self.zoom_factor.value(),
+                'track': track_objects,
+                'return_preset': self.return_preset.text(),
+                'timeout': self.timeout.value()
+            }
+
+        # Add ONVIF config to main config if any settings are present
+        if onvif_config:
+            config['onvif'] = onvif_config
 
         # Validate required fields
         if not config['ffmpeg']['inputs'][0]['path']:
