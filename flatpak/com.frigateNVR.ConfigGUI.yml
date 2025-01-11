@@ -21,8 +21,8 @@ modules:
         --prefix=${FLATPAK_DEST} "sip" "PyQt6-sip" "sipbuild"
     sources:
       - type: file
-        url: https://files.pythonhosted.org/packages/c0/5e/c284c8c7a5c86e8a8b3f935ba3e0e5d0c8ee10e6c9e2b0b7c1b03c4d5d1/sip-6.8.3.tar.gz
-        sha256: 888547b018bb24c36aded519e93d3e513d4c6aa0ba55b7cc1affbd45cf10762c
+        url: https://files.pythonhosted.org/packages/e2/83/b23f610ef99fa23aa3c8dcd2ff8536c37b943654405ff4f45f3230327a40/sip-6.9.1.tar.gz
+        sha256: 7904be5190d7879952563b78a3af0e58fa27d9525af7f53f93eac7a83b433e7b
       - type: file
         url: https://files.pythonhosted.org/packages/ee/d1/8c4f0a1a4d4f8c86d9b6f2d0ca7fad097dc1983c3b6c1cec9c5c3c08e6a3/PyQt6_sip-13.6.0.tar.gz
         sha256: 2486e1588071943d4f6657ba09096dc9fffd2322ad2c30041e78ea3f037b5778
