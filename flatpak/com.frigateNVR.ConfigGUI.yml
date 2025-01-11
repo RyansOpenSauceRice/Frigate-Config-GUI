@@ -14,11 +14,27 @@ finish-args:
   # Network access for OpenAI API (if used)
   - --share=network
 modules:
+  - name: python3-sip
+    buildsystem: simple
+    build-commands:
+      - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
+        --prefix=${FLATPAK_DEST} "sip" "PyQt6-sip" "sipbuild"
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/c0/5e/c284c8c7a5c86e8a8b3f935ba3e0e5d0c8ee10e6c9e2b0b7c1b03c4d5d1/sip-6.8.3.tar.gz
+        sha256: 888547b018bb24c36aded519e93d3e513d4c6aa0ba55b7cc1affbd45cf10762c
+      - type: file
+        url: https://files.pythonhosted.org/packages/ee/d1/8c4f0a1a4d4f8c86d9b6f2d0ca7fad097dc1983c3b6c1cec9c5c3c08e6a3/PyQt6_sip-13.6.0.tar.gz
+        sha256: 2486e1588071943d4f6657ba09096dc9fffd2322ad2c30041e78ea3f037b5778
+      - type: file
+        url: https://files.pythonhosted.org/packages/76/28/42f8cd13f8d4c49c28a6c2eec4b40c69c6d7aa6c6c0b9e0c9c8c6f9f4f3/sipbuild-7.0.1.tar.gz
+        sha256: 4c3b5c4e5dc98c1a1f32e332d858f6b2853b56bb4c1a8c0c7c45c75e089b8c6e
+
   - name: python3-PyQt6
     buildsystem: simple
     build-commands:
       - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
-        --prefix=${FLATPAK_DEST} "PyQt6" --no-build-isolation
+        --prefix=${FLATPAK_DEST} "PyQt6"
     sources:
       - type: file
         url: https://files.pythonhosted.org/packages/8c/2b/6fe0409501798abc780a70cab48c39599742ab5a8168e682107eaab78fca/PyQt6-6.6.1.tar.gz
