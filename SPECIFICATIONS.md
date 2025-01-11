@@ -14,6 +14,7 @@ A desktop GUI application designed to simplify the configuration of Frigate NVR 
    - Clear, descriptive labels that explain what each setting does
    - Real-time validation with helpful error messages
    - Visual feedback for configuration impacts
+   - Required fields marked with a red asterisk (*), optional fields unmarked
 
 3. **Smart Defaults**
    - Pre-configured with recommended settings
