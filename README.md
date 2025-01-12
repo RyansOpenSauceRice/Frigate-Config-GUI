@@ -20,8 +20,8 @@ This project follows Test-Driven Development (TDD) practices. For detailed speci
 
 ### Requirements
 
-- Python (version TBD)
-- Additional dependencies will be listed in requirements.txt
+- Node.js (version 18 or higher)
+- npm or yarn for package management
 
 ### Installation
 

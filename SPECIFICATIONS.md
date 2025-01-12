@@ -26,13 +26,18 @@ A desktop GUI application designed to simplify the configuration of Frigate NVR 
 - This application will focus on configuration aspects not already well-served by the main Frigate UI
 
 ## Technical Stack
-- **Language:** Python
+- **Framework:** Electron (desktop application framework)
+- **Frontend:**
+  - React (UI library)
+  - TypeScript (type-safe JavaScript)
+  - Material-UI (component library)
 - **Development Approach:** Test Driven Development (TDD)
 - **Distribution:** Flatpak
 - **Core Dependencies:**
-  - YAML processing libraries for reading/writing configuration files
-  - GUI framework (to be determined)
-  - Testing framework for TDD implementation
+  - js-yaml for YAML processing
+  - Jest for testing
+  - Electron Builder for packaging
+  - ESLint + Prettier for code quality
 
 ## Key Features
 1. **Configuration File Management**
@@ -77,12 +82,17 @@ A desktop GUI application designed to simplify the configuration of Frigate NVR 
 ```
 frigate-config-gui/
 ├── src/
-│   ├── gui/
-│   ├── config/
-│   └── utils/
+│   ├── main/          # Electron main process
+│   ├── renderer/      # React application (renderer process)
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   └── utils/
+│   └── shared/        # Code shared between main and renderer
 ├── tests/
 ├── docs/
-└── flatpak/
+├── flatpak/
+└── electron-builder.yml
 ```
 
 ## Reference Documentation
