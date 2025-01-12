@@ -47,4 +47,7 @@ htmlcov/
 
 # Operating System
 .DS_Store
-Thumbs.dbnode_modules/
+Thumbs.db
+
+# Node.js
+node_modules/
