@@ -1,7 +1,7 @@
 app-id: com.frigateNVR.ConfigGUI
-runtime: org.kde.Platform
-runtime-version: '6.5'
-sdk: org.kde.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
 command: frigate-config-gui
 finish-args:
   # X11 + XShm access
@@ -11,55 +11,40 @@ finish-args:
   - --socket=wayland
   # File system access for config files
   - --filesystem=home
-  # Network access for OpenAI API (if used)
+  # Network access for updates and package installation
   - --share=network
+  # Allow communication with host dbus
+  - --socket=session-bus
+  # For hardware acceleration
+  - --device=dri
 modules:
-  - name: python3-sip
+  - name: nodejs
     buildsystem: simple
     build-commands:
-      - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
-        --prefix=${FLATPAK_DEST} "sip" "PyQt6-sip" "sipbuild"
+      - |
+        ./configure --prefix=/app
+        make -j $FLATPAK_BUILDER_N_JOBS
+        make install
     sources:
-      - type: file
-        url: https://files.pythonhosted.org/packages/e2/83/b23f610ef99fa23aa3c8dcd2ff8536c37b943654405ff4f45f3230327a40/sip-6.9.1.tar.gz
-        sha256: 7904be5190d7879952563b78a3af0e58fa27d9525af7f53f93eac7a83b433e7b
-      - type: file
-        url: https://files.pythonhosted.org/packages/ee/d1/8c4f0a1a4d4f8c86d9b6f2d0ca7fad097dc1983c3b6c1cec9c5c3c08e6a3/PyQt6_sip-13.6.0.tar.gz
-        sha256: 2486e1588071943d4f6657ba09096dc9fffd2322ad2c30041e78ea3f037b5778
-      - type: file
-        url: https://files.pythonhosted.org/packages/76/28/42f8cd13f8d4c49c28a6c2eec4b40c69c6d7aa6c6c0b9e0c9c8c6f9f4f3/sipbuild-7.0.1.tar.gz
-        sha256: 4c3b5c4e5dc98c1a1f32e332d858f6b2853b56bb4c1a8c0c7c45c75e089b8c6e
-
-  - name: python3-PyQt6
-    buildsystem: simple
-    build-commands:
-      - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
-        --prefix=${FLATPAK_DEST} "PyQt6"
-    sources:
-      - type: file
-        url: https://files.pythonhosted.org/packages/8c/2b/6fe0409501798abc780a70cab48c39599742ab5a8168e682107eaab78fca/PyQt6-6.6.1.tar.gz
-        sha256: 9f158aa29d205142c56f0f35d07784b8df0be28378d20a97bcda8bd64ffd0379
-
-  - name: python3-dependencies
-    buildsystem: simple
-    build-commands:
-      - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
-        --prefix=${FLATPAK_DEST} pyyaml pydantic
-    sources:
-      - type: file
-        url: https://files.pythonhosted.org/packages/54/ed/79a089b6be93607fa5cdaedf301d7dfb23af5f25c398d5ead2525b063e17/pyyaml-6.0.2.tar.gz
-        sha256: d584d9ec91ad65861cc08d42e834324ef890a082e591037abe114850ff7bbc3e
-      - type: file
-        url: https://files.pythonhosted.org/packages/6a/c7/ca334c2ef6f2e046b1144fe4bb2a5da8a4c574e7f2ebf7e16b34a6a2fa92/pydantic-2.10.5.tar.gz
-        sha256: 278b38dbbaec562011d659ee05f63346951b3a248a6f3642e1bc68894ea2b4ff
+      - type: archive
+        url: https://nodejs.org/dist/v20.11.1/node-v20.11.1.tar.xz
+        sha256: 85ca2c3d9df9b77e4ee826e03c10f5d2aa7ae35b7230390f2ea118e5d0d9b93f
 
   - name: frigate-config-gui
     buildsystem: simple
     build-commands:
-      - install -D frigate-config-gui /app/bin/frigate-config-gui
-      - install -D com.frigateNVR.ConfigGUI.desktop /app/share/applications/com.frigateNVR.ConfigGUI.desktop
-      - install -D com.frigateNVR.ConfigGUI.appdata.xml /app/share/metainfo/com.frigateNVR.ConfigGUI.appdata.xml
-      - install -D icon.svg /app/share/icons/hicolor/scalable/apps/com.frigateNVR.ConfigGUI.svg
+      # Install npm dependencies (including TypeScript, React, and dev dependencies)
+      - npm ci
+      # Type check TypeScript
+      - npm run type-check
+      # Build TypeScript and bundle the application
+      - npm run build
+      # Install the application
+      - cp -r dist/linux-unpacked/* /app/
+      # Install desktop file and icons
+      - install -Dm644 build/icon.png /app/share/icons/hicolor/512x512/apps/com.frigateNVR.ConfigGUI.png
+      - install -Dm644 flatpak/com.frigateNVR.ConfigGUI.desktop /app/share/applications/com.frigateNVR.ConfigGUI.desktop
+      - install -Dm644 flatpak/com.frigateNVR.ConfigGUI.appdata.xml /app/share/metainfo/com.frigateNVR.ConfigGUI.appdata.xml
     sources:
       - type: dir
         path: ../
