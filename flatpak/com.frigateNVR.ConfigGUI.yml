@@ -22,13 +22,12 @@ modules:
     buildsystem: simple
     build-commands:
       - |
-        ./configure --prefix=/app
-        make -j $FLATPAK_BUILDER_N_JOBS
-        make install
+        tar xf node-v20.11.1-linux-x64.tar.xz
+        cp -r node-v20.11.1-linux-x64/* /app/
     sources:
       - type: archive
-        url: https://nodejs.org/dist/v20.11.1/node-v20.11.1.tar.xz
-        sha256: 85ca2c3d9df9b77e4ee826e03c10f5d2aa7ae35b7230390f2ea118e5d0d9b93f
+        url: https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.xz
+        sha256: 77813edbf3f7f16d2d35d3353443dee4e61d5ee84d9e3138c7538a3c0ca5209e
 
   - name: frigate-config-gui
     buildsystem: simple
