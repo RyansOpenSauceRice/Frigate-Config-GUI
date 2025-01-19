@@ -36,16 +36,31 @@ check_dependencies() {
 update_node_sha256() {
     echo "Checking Node.js tarball SHA256..."
     local node_url="https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz"
-    local new_sha256=$(curl -sL "$node_url" | sha256sum | cut -d' ' -f1)
+    local download_dir="$(dirname "$MANIFEST_PATH")/downloads"
+    local tarball_path="$download_dir/node-v${NODE_VERSION}-linux-x64.tar.xz"
     
+    # Create downloads directory if it doesn't exist
+    mkdir -p "$download_dir"
+    
+    # Download the tarball
+    if ! curl -L "$node_url" -o "$tarball_path"; then
+        echo -e "${RED}Error: Failed to download Node.js tarball${NC}"
+        exit 1
+    fi
+    
+    # Compute SHA256
+    local new_sha256=$(sha256sum "$tarball_path" | cut -d' ' -f1)
     if [ -z "$new_sha256" ]; then
-        echo -e "${RED}Error: Failed to download Node.js tarball or compute SHA256${NC}"
+        echo -e "${RED}Error: Failed to compute SHA256${NC}"
         exit 1
     fi
     
     # Update SHA256 in manifest
     sed -i "s|sha256: [a-f0-9]\{64\}|sha256: $new_sha256|" "$MANIFEST_PATH"
     echo -e "${GREEN}Updated Node.js SHA256 in manifest${NC}"
+    
+    # Clean up downloaded file
+    rm -f "$tarball_path"
 }
 
 # Function to clean old builds
