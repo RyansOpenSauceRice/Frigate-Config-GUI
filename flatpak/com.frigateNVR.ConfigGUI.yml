@@ -22,12 +22,23 @@ modules:
     buildsystem: simple
     build-commands:
       - |
-        tar xf node-v20.11.1-linux-x64.tar.xz
-        cp -r node-v20.11.1-linux-x64/* /app/
+        # Extract Node.js to a specific directory
+        mkdir -p /app/nodejs
+        tar xf node-v20.11.1-linux-x64.tar.xz --strip-components=1 -C /app/nodejs
+        # Add Node.js to PATH
+        mkdir -p /app/bin
+        ln -s /app/nodejs/bin/node /app/bin/node
+        ln -s /app/nodejs/bin/npm /app/bin/npm
+        ln -s /app/nodejs/bin/npx /app/bin/npx
     sources:
       - type: archive
-        path: downloads/node-v20.11.1-linux-x64.tar.xz
+        url: https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.xz
         sha256: d8dab549b09672b03356aa2257699f3de3b58c96e74eb26a8b495fbdc9cf6fbe
+        x-checker-data:
+          type: json
+          url: https://nodejs.org/dist/index.json
+          version-query: ".[0].version"
+          url-query: "\"https://nodejs.org/dist/\" + .[0].version + \"/node-\" + .[0].version + \"-linux-x64.tar.xz\""
 
   - name: frigate-config-gui
     buildsystem: simple

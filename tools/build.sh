@@ -53,43 +53,43 @@ check_dependencies() {
 
 # Function to update Node.js SHA256 in manifest
 update_node_sha256() {
-    echo "Checking Node.js tarball SHA256..."
+    echo "Checking Node.js SHA256..."
     local node_url="https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz"
-    local download_dir="$(dirname "$MANIFEST_PATH")/downloads"
-    local tarball_path="$download_dir/node-v${NODE_VERSION}-linux-x64.tar.xz"
     
-    # Create downloads directory if it doesn't exist
-    mkdir -p "$download_dir"
-    
-    # Download the tarball if it doesn't exist or if force download is requested
-    if [ ! -f "$tarball_path" ] || [ "${FORCE_DOWNLOAD:-false}" = "true" ]; then
-        echo "Downloading Node.js tarball..."
-        if ! curl -L "$node_url" -o "$tarball_path"; then
-            echo -e "${RED}Error: Failed to download Node.js tarball${NC}"
-            print_debug_info
-            exit 1
-        fi
-    else
-        echo "Using existing Node.js tarball..."
+    # Download to a temporary file to check SHA256
+    local temp_file="/tmp/node-v${NODE_VERSION}-linux-x64.tar.xz"
+    echo "Downloading Node.js to verify SHA256..."
+    if ! curl -L "$node_url" -o "$temp_file"; then
+        echo -e "${RED}Error: Failed to download Node.js${NC}"
+        print_debug_info
+        exit 1
     fi
     
     # Compute SHA256
     echo "Computing SHA256..."
-    local new_sha256=$(sha256sum "$tarball_path" | cut -d' ' -f1)
+    local new_sha256=$(sha256sum "$temp_file" | cut -d' ' -f1)
     if [ -z "$new_sha256" ]; then
         echo -e "${RED}Error: Failed to compute SHA256${NC}"
         print_debug_info
         exit 1
     fi
     
-    # Update SHA256 in manifest
-    echo "Updating manifest with SHA256: $new_sha256"
-    if ! sed -i "s|sha256: [a-f0-9]\{64\}|sha256: $new_sha256|" "$MANIFEST_PATH"; then
-        echo -e "${RED}Error: Failed to update SHA256 in manifest${NC}"
-        print_debug_info
-        exit 1
+    # Update SHA256 in manifest if different
+    local current_sha256=$(grep -oP 'sha256: \K[a-f0-9]{64}' "$MANIFEST_PATH" || echo "")
+    if [ "$current_sha256" != "$new_sha256" ]; then
+        echo "Updating manifest with new SHA256: $new_sha256"
+        if ! sed -i "s|sha256: [a-f0-9]\{64\}|sha256: $new_sha256|" "$MANIFEST_PATH"; then
+            echo -e "${RED}Error: Failed to update SHA256 in manifest${NC}"
+            print_debug_info
+            exit 1
+        fi
+        echo -e "${GREEN}Updated Node.js SHA256 in manifest${NC}"
+    else
+        echo -e "${GREEN}SHA256 is already up to date${NC}"
     fi
-    echo -e "${GREEN}Updated Node.js SHA256 in manifest${NC}"
+    
+    # Clean up
+    rm -f "$temp_file"
 }
 
 # Function to clean old builds
@@ -107,14 +107,22 @@ print_debug_info() {
     echo "Cache directory: $CACHE_DIR"
     echo "Node.js version: $NODE_VERSION"
     
-    # Check if downloads directory exists
-    local download_dir="$(dirname "$MANIFEST_PATH")/downloads"
-    echo "Downloads directory: $download_dir"
-    if [ -d "$download_dir" ]; then
-        echo "Downloads directory contents:"
-        ls -la "$download_dir"
-    else
-        echo "Downloads directory does not exist!"
+    # Check Flatpak environment
+    echo -e "\nFlatpak environment:"
+    flatpak --version
+    echo "Installed runtimes:"
+    flatpak list --runtime
+    
+    # Check build directory state
+    if [ -d "$BUILD_DIR" ]; then
+        echo -e "\nBuild directory contents:"
+        ls -la "$BUILD_DIR"
+    fi
+    
+    # Check cache directory state
+    if [ -d "$CACHE_DIR" ]; then
+        echo -e "\nCache directory contents:"
+        ls -la "$CACHE_DIR"
     fi
     
     # Check manifest file
@@ -125,6 +133,15 @@ print_debug_info() {
     echo -e "\nSystem resources:"
     df -h .
     free -h
+    
+    # Check Node.js installation
+    echo -e "\nNode.js environment:"
+    if command -v node &> /dev/null; then
+        node --version
+        npm --version
+    else
+        echo "Node.js not found in PATH"
+    fi
     
     echo -e "\n${YELLOW}=== End Debug Information ===${NC}\n"
 }
