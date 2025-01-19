@@ -25,11 +25,35 @@ modules:
         # Extract Node.js to a specific directory
         mkdir -p /app/nodejs
         tar xf node-v20.11.1-linux-x64.tar.xz --strip-components=1 -C /app/nodejs
-        # Add Node.js to PATH
+        # Add Node.js to PATH and set environment variables
         mkdir -p /app/bin
         ln -s /app/nodejs/bin/node /app/bin/node
         ln -s /app/nodejs/bin/npm /app/bin/npm
         ln -s /app/nodejs/bin/npx /app/bin/npx
+        # Create wrapper scripts that set the environment
+        cat > /app/bin/node-wrapper << 'EOL'
+        #!/bin/sh
+        export PATH="/app/nodejs/bin:$PATH"
+        export NODE_PATH="/app/nodejs/lib/node_modules"
+        exec /app/nodejs/bin/node "$@"
+        EOL
+        cat > /app/bin/npm-wrapper << 'EOL'
+        #!/bin/sh
+        export PATH="/app/nodejs/bin:$PATH"
+        export NODE_PATH="/app/nodejs/lib/node_modules"
+        exec /app/nodejs/bin/npm "$@"
+        EOL
+        cat > /app/bin/npx-wrapper << 'EOL'
+        #!/bin/sh
+        export PATH="/app/nodejs/bin:$PATH"
+        export NODE_PATH="/app/nodejs/lib/node_modules"
+        exec /app/nodejs/bin/npx "$@"
+        EOL
+        chmod +x /app/bin/node-wrapper /app/bin/npm-wrapper /app/bin/npx-wrapper
+        # Make the wrappers the default
+        mv /app/bin/node-wrapper /app/bin/node
+        mv /app/bin/npm-wrapper /app/bin/npm
+        mv /app/bin/npx-wrapper /app/bin/npx
     sources:
       - type: archive
         url: https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.xz
@@ -43,18 +67,22 @@ modules:
   - name: frigate-config-gui
     buildsystem: simple
     build-commands:
-      # Install npm dependencies (including TypeScript, React, and dev dependencies)
-      - npm ci
-      # Type check TypeScript
-      - npm run type-check
-      # Build TypeScript and bundle the application
-      - npm run build
-      # Install the application
-      - cp -r dist/linux-unpacked/* /app/
-      # Install desktop file and icons
-      - install -Dm644 build/icon.png /app/share/icons/hicolor/512x512/apps/com.frigateNVR.ConfigGUI.png
-      - install -Dm644 flatpak/com.frigateNVR.ConfigGUI.desktop /app/share/applications/com.frigateNVR.ConfigGUI.desktop
-      - install -Dm644 flatpak/com.frigateNVR.ConfigGUI.appdata.xml /app/share/metainfo/com.frigateNVR.ConfigGUI.appdata.xml
+      # Set up environment
+      - |
+        export PATH="/app/nodejs/bin:$PATH"
+        export NODE_PATH="/app/nodejs/lib/node_modules"
+        # Install npm dependencies (including TypeScript, React, and dev dependencies)
+        npm ci
+        # Type check TypeScript
+        npm run type-check
+        # Build TypeScript and bundle the application
+        npm run build
+        # Install the application
+        cp -r dist/linux-unpacked/* /app/
+        # Install desktop file and icons
+        install -Dm644 build/icon.png /app/share/icons/hicolor/512x512/apps/com.frigateNVR.ConfigGUI.png
+        install -Dm644 flatpak/com.frigateNVR.ConfigGUI.desktop /app/share/applications/com.frigateNVR.ConfigGUI.desktop
+        install -Dm644 flatpak/com.frigateNVR.ConfigGUI.appdata.xml /app/share/metainfo/com.frigateNVR.ConfigGUI.appdata.xml
     sources:
       - type: dir
         path: ../
