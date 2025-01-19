@@ -3,6 +3,9 @@
 ## Project Overview
 A desktop GUI application designed to simplify the configuration of Frigate NVR (Network Video Recorder). This is NOT just another YAML editor - it's a purpose-built tool that makes Frigate configuration accessible and intuitive for users of all technical levels.
 
+### Long-term Vision
+This project is being developed with the intention of eventual integration into the main Frigate NVR project. The goal is to provide a robust, user-friendly configuration interface that can be seamlessly incorporated into Frigate's management interface once it reaches maturity.
+
 ### Key Design Principles
 1. **Example-Driven Configuration**
    - Every field includes practical examples
