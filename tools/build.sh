@@ -179,7 +179,6 @@ print_debug_info() {
     
     echo -e "\n${YELLOW}=== End Debug Information ===${NC}\n"
 }
-}
 
 # Function to run the build
 run_build() {
