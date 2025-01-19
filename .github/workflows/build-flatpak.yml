@@ -27,8 +27,8 @@ jobs:
 
       - name: Build Flatpak
         run: |
-          flatpak-builder --repo=repo --force-clean build-dir flatpak/com.frigateNVR.ConfigGUI.yml
-          flatpak build-bundle repo frigate-config-gui.flatpak com.frigateNVR.ConfigGUI
+          chmod +x tools/build.sh
+          ./tools/build.sh
 
       - name: Upload Flatpak bundle
         uses: actions/upload-artifact@v4
