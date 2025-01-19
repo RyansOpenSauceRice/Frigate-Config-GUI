@@ -53,14 +53,15 @@ check_dependencies() {
 
 # Function to update Node.js SHA256 in manifest
 update_node_sha256() {
-    echo "Checking Node.js SHA256..."
+    echo "Verifying Node.js source..."
     local node_url="https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz"
     
-    # Download to a temporary file to check SHA256
+    # Download to a temporary file to verify SHA256
     local temp_file="/tmp/node-v${NODE_VERSION}-linux-x64.tar.xz"
-    echo "Downloading Node.js to verify SHA256..."
+    echo "Downloading Node.js to verify SHA256 (this is just for verification, Flatpak will handle the actual download)..."
     if ! curl -L "$node_url" -o "$temp_file"; then
         echo -e "${RED}Error: Failed to download Node.js${NC}"
+        echo "Please check your internet connection and the Node.js version ($NODE_VERSION)"
         print_debug_info
         exit 1
     fi
@@ -70,6 +71,7 @@ update_node_sha256() {
     local new_sha256=$(sha256sum "$temp_file" | cut -d' ' -f1)
     if [ -z "$new_sha256" ]; then
         echo -e "${RED}Error: Failed to compute SHA256${NC}"
+        echo "The downloaded file might be corrupted"
         print_debug_info
         exit 1
     fi
@@ -80,6 +82,7 @@ update_node_sha256() {
         echo "Updating manifest with new SHA256: $new_sha256"
         if ! sed -i "s|sha256: [a-f0-9]\{64\}|sha256: $new_sha256|" "$MANIFEST_PATH"; then
             echo -e "${RED}Error: Failed to update SHA256 in manifest${NC}"
+            echo "Please check if the manifest file is writable"
             print_debug_info
             exit 1
         fi
@@ -90,6 +93,7 @@ update_node_sha256() {
     
     # Clean up
     rm -f "$temp_file"
+    echo "Node.js source verification complete. Flatpak will handle the actual download during build."
 }
 
 # Function to clean old builds
@@ -110,6 +114,7 @@ print_debug_info() {
     # Check Flatpak environment
     echo -e "\nFlatpak environment:"
     flatpak --version
+    flatpak-builder --version
     echo "Installed runtimes:"
     flatpak list --runtime
     
@@ -117,12 +122,20 @@ print_debug_info() {
     if [ -d "$BUILD_DIR" ]; then
         echo -e "\nBuild directory contents:"
         ls -la "$BUILD_DIR"
+        if [ -d "$BUILD_DIR/.flatpak-builder" ]; then
+            echo -e "\nBuild cache contents:"
+            ls -la "$BUILD_DIR/.flatpak-builder"
+        fi
     fi
     
     # Check cache directory state
     if [ -d "$CACHE_DIR" ]; then
         echo -e "\nCache directory contents:"
         ls -la "$CACHE_DIR"
+        if [ -d "$CACHE_DIR/downloads" ]; then
+            echo -e "\nDownloads cache contents:"
+            ls -la "$CACHE_DIR/downloads"
+        fi
     fi
     
     # Check manifest file
@@ -134,16 +147,38 @@ print_debug_info() {
     df -h .
     free -h
     
-    # Check Node.js installation
+    # Check Node.js environment
     echo -e "\nNode.js environment:"
     if command -v node &> /dev/null; then
         node --version
         npm --version
+        echo "Node.js location: $(which node)"
+        echo "npm location: $(which npm)"
     else
         echo "Node.js not found in PATH"
+        echo "PATH: $PATH"
+    fi
+    
+    # Check for common issues
+    echo -e "\nChecking for common issues:"
+    if ! command -v flatpak-builder &> /dev/null; then
+        echo "❌ flatpak-builder not found"
+    fi
+    if ! command -v curl &> /dev/null; then
+        echo "❌ curl not found"
+    fi
+    if ! command -v sha256sum &> /dev/null; then
+        echo "❌ sha256sum not found"
+    fi
+    if [ ! -w "$(dirname "$MANIFEST_PATH")" ]; then
+        echo "❌ Manifest directory not writable"
+    fi
+    if [ ! -w "$CACHE_DIR" ]; then
+        echo "❌ Cache directory not writable"
     fi
     
     echo -e "\n${YELLOW}=== End Debug Information ===${NC}\n"
+}
 }
 
 # Function to run the build
@@ -153,12 +188,9 @@ run_build() {
     # Create cache directory if it doesn't exist
     mkdir -p "$CACHE_DIR"
     
-    # Verify Node.js tarball exists
-    local download_dir="$(dirname "$MANIFEST_PATH")/downloads"
-    local tarball_path="$download_dir/node-v${NODE_VERSION}-linux-x64.tar.xz"
-    if [ ! -f "$tarball_path" ]; then
-        echo -e "${RED}Error: Node.js tarball not found at: $tarball_path${NC}"
-        echo "This file should have been downloaded during the SHA256 check."
+    # Verify Flatpak environment
+    if ! flatpak-builder --version &>/dev/null; then
+        echo -e "${RED}Error: flatpak-builder not found${NC}"
         print_debug_info
         exit 1
     fi
