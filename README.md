@@ -2,7 +2,7 @@
 
 ⚠️ **IMPORTANT: This project is in early development and NOT ready for production use** ⚠️
 
-A desktop application for managing Frigate NVR configuration files through an intuitive graphical user interface. This project aims to be integrated into the main Frigate NVR project once it reaches maturity.
+A desktop application for managing Frigate NVR configuration files through an intuitive graphical user interface. This project aims to be adopted by the Frigate NVR organization once it reaches maturity.
 
 ## Project Status
 
@@ -89,4 +89,4 @@ Contributions are welcome! Please read our contributing guidelines (coming soon)
 
 ## License
 
-[License type to be determined]
+This project is licensed under the [MIT License](LICENSE)
