@@ -3,6 +3,9 @@ runtime: org.freedesktop.Platform
 runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 command: frigate-config-gui
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.node20
+
 finish-args:
   # X11 + XShm access
   - --share=ipc
@@ -17,72 +20,51 @@ finish-args:
   - --socket=session-bus
   # For hardware acceleration
   - --device=dri
-modules:
-  - name: nodejs
-    buildsystem: simple
-    build-commands:
-      - |
-        # Extract Node.js to a specific directory
-        mkdir -p /app/nodejs
-        tar xf node-v20.11.1-linux-x64.tar.xz --strip-components=1 -C /app/nodejs
-        # Add Node.js to PATH and set environment variables
-        mkdir -p /app/bin
-        ln -s /app/nodejs/bin/node /app/bin/node
-        ln -s /app/nodejs/bin/npm /app/bin/npm
-        ln -s /app/nodejs/bin/npx /app/bin/npx
-        # Create wrapper scripts that set the environment
-        cat > /app/bin/node-wrapper << 'EOL'
-        #!/bin/sh
-        export PATH="/app/nodejs/bin:$PATH"
-        export NODE_PATH="/app/nodejs/lib/node_modules"
-        exec /app/nodejs/bin/node "$@"
-        EOL
-        cat > /app/bin/npm-wrapper << 'EOL'
-        #!/bin/sh
-        export PATH="/app/nodejs/bin:$PATH"
-        export NODE_PATH="/app/nodejs/lib/node_modules"
-        exec /app/nodejs/bin/npm "$@"
-        EOL
-        cat > /app/bin/npx-wrapper << 'EOL'
-        #!/bin/sh
-        export PATH="/app/nodejs/bin:$PATH"
-        export NODE_PATH="/app/nodejs/lib/node_modules"
-        exec /app/nodejs/bin/npx "$@"
-        EOL
-        chmod +x /app/bin/node-wrapper /app/bin/npm-wrapper /app/bin/npx-wrapper
-        # Make the wrappers the default
-        mv /app/bin/node-wrapper /app/bin/node
-        mv /app/bin/npm-wrapper /app/bin/npm
-        mv /app/bin/npx-wrapper /app/bin/npx
-    sources:
-      - type: archive
-        url: https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.xz
-        sha256: d8dab549b09672b03356aa2257699f3de3b58c96e74eb26a8b495fbdc9cf6fbe
-        x-checker-data:
-          type: json
-          url: https://nodejs.org/dist/index.json
-          version-query: ".[0].version"
-          url-query: "\"https://nodejs.org/dist/\" + .[0].version + \"/node-\" + .[0].version + \"-linux-x64.tar.xz\""
 
+build-options:
+  env:
+    NPM_CONFIG_LOGLEVEL: info
+
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/doc
+  - /share/man
+  - '*.a'
+  - '*.la'
+
+modules:
   - name: frigate-config-gui
     buildsystem: simple
     build-commands:
-      # Set up environment
       - |
-        export PATH="/app/nodejs/bin:$PATH"
-        export NODE_PATH="/app/nodejs/lib/node_modules"
-        # Install npm dependencies (including TypeScript, React, and dev dependencies)
+        # Enable Node.js SDK extension
+        . /usr/lib/sdk/node20/enable.sh
+
+        # Install dependencies and build
         npm ci
-        # Type check TypeScript
-        npm run type-check
-        # Build TypeScript and bundle the application
         npm run build
-        # Install the application
+
+        # Install application
+        mkdir -p /app/bin
         cp -r dist/linux-unpacked/* /app/
+        mv /app/frigate-config-gui /app/bin/
+
         # Install desktop file and icons
-        install -Dm644 build/icon.png /app/share/icons/hicolor/512x512/apps/com.frigateNVR.ConfigGUI.png
-        install -Dm644 flatpak/com.frigateNVR.ConfigGUI.desktop /app/share/applications/com.frigateNVR.ConfigGUI.desktop
-        install -Dm644 flatpak/com.frigateNVR.ConfigGUI.appdata.xml /app/share/metainfo/com.frigateNVR.ConfigGUI.appdata.xml
+        mkdir -p /app/share/icons/hicolor/512x512/apps
+        mkdir -p /app/share/applications
+        mkdir -p /app/share/metainfo
+        cp build/icon.png /app/share/icons/hicolor/512x512/apps/${FLATPAK_ID}.png
+        cp flatpak/${FLATPAK_ID}.desktop /app/share/applications/
+        cp flatpak/${FLATPAK_ID}.appdata.xml /app/share/metainfo/
+
+        # Create wrapper script
+        cat > /app/bin/frigate-config-gui-wrapper << 'EOL'
+        #!/bin/sh
+        exec /app/bin/frigate-config-gui "$@"
+        EOL
+        chmod +x /app/bin/frigate-config-gui-wrapper
+        ln -sf /app/bin/frigate-config-gui-wrapper /app/bin/frigate-config-gui
     sources:
       - type: dir
-        path: ../
+        path: .

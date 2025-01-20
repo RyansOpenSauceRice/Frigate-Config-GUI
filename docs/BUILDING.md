@@ -2,103 +2,113 @@
 
 This document describes how to build the Frigate Config GUI application.
 
-## Prerequisites
+## Development Build
 
+For local development and testing:
+
+### Prerequisites
 - Node.js 20.x or later
 - npm 10.x or later
-- Flatpak and flatpak-builder (for creating Flatpak packages)
-- A Linux system with fuse support (for Flatpak builds)
 
-## Build Environment
+### Build Steps
 
-The application can be built in two ways:
-1. Local development build (for testing and development)
-2. Flatpak package build (for distribution)
-
-### Local Development Build
-
-For local development:
-
+1. Install dependencies:
 ```bash
-# Install dependencies
 npm ci
+```
 
-# Type check TypeScript
-npm run type-check
-
-# Start development server
+2. Start development server:
+```bash
 npm run dev
 ```
 
-### Flatpak Package Build
-
-⚠️ **Important**: Do not attempt to build Flatpak packages in container environments or systems without proper fuse support.
-
-The Flatpak build requires:
-- A regular Linux system (not a container)
-- Proper fuse support
-- Flatpak and flatpak-builder installed
-- Flathub repository added
-
-To build the Flatpak package:
-
+3. Build for testing:
 ```bash
-# Add Flathub repository if not already added
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
-# Install required SDK and runtime
-flatpak install flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 org.freedesktop.Sdk.Extension.node20//24.08
-
-# Run the build script
-chmod +x tools/build.sh
-./tools/build.sh
+npm run build
 ```
 
-The build script will:
-1. Check for required dependencies
-2. Update Node.js SHA256 checksums automatically
-3. Build the Flatpak package
-4. Create a single-file bundle at `frigate-config-gui.flatpak`
+The development build is automatically verified by GitHub Actions on every push and pull request.
+
+## Distribution Build
+
+Distribution builds are handled automatically by GitHub Actions when a release is created.
+
+### Build Types
+
+1. **Flatpak Package** (Linux)
+   - Built using the freedesktop-sdk 24.08
+   - Uses Node.js 20.x SDK extension
+   - Available as a single-file bundle
+
+2. **Electron Builds** (Cross-platform)
+   - Linux: AppImage, deb, rpm, snap
+   - Windows: exe installer
+   - macOS: dmg installer
+
+### Creating a Release
+
+1. Create a new release on GitHub
+2. Tag it with a semantic version (e.g., v1.0.0)
+3. GitHub Actions will automatically:
+   - Build all distribution packages
+   - Attach them to the release
+   - Create a Flatpak bundle
+
+### Manual Builds
+
+While not recommended, you can build distribution packages manually:
+
+#### Flatpak Build
+```bash
+# Prerequisites
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 org.freedesktop.Sdk.Extension.node20//24.08
+
+# Build
+flatpak-builder --force-clean build-dir flatpak/com.frigateNVR.ConfigGUI.yml
+```
+
+#### Electron Build
+```bash
+# Build for current platform
+npm run electron:build
+
+# Build for specific platform (on Linux)
+npm run electron:build:linux
+npm run electron:build:win
+npm run electron:build:mac
+```
 
 ## Build Artifacts
 
-To prevent unnecessary files from being committed to the repository:
+The following build artifacts are automatically ignored by git:
 
-1. Always update `.gitignore` when adding new build processes or tools
-2. Current ignored patterns include:
-   - `node_modules/`
-   - `dist/`
-   - `build-dir/`
-   - `.flatpak-builder/`
-   - `*.flatpak`
-   - Development environment files (`.env`, `.env.local`, etc.)
-   - IDE and editor files (`.vscode/`, `.idea/`, etc.)
+- `node_modules/` - npm dependencies
+- `dist/` - Build outputs
+- `build-dir/` - Flatpak build directory
+- `.flatpak-builder/` - Flatpak cache
+- `*.flatpak` - Flatpak bundles
+- Development files (`.env`, `.env.local`)
+- IDE files (`.vscode/`, `.idea/`)
 
-3. Before committing changes, verify no build artifacts are included:
-   ```bash
-   git status --ignored
-   ```
+To check for untracked build artifacts:
+```bash
+git status --ignored
+```
 
-4. If you find new build artifacts that should be ignored, update `.gitignore`:
-   ```bash
-   echo "new-artifact-pattern/" >> .gitignore
-   ```
+## CI/CD Pipeline
 
-## Troubleshooting
+The project uses GitHub Actions for continuous integration and delivery:
 
-Common build issues:
+1. **Development Pipeline** (`dev-build.yml`)
+   - Runs on every push and pull request
+   - Verifies build and type checking
+   - Caches npm dependencies
+   - Uploads build artifacts for inspection
 
-1. **Flatpak build fails with "fuse: device not found"**
-   - This error occurs when building in a container or system without fuse support
-   - Solution: Build on a regular Linux system with proper fuse support
-
-2. **Node.js SDK extension not found**
-   - Make sure you've installed the required SDK extension:
-     ```bash
-     flatpak install flathub org.freedesktop.Sdk.Extension.node20//24.08
-     ```
-
-3. **Build artifacts accidentally committed**
-   - Use `git rm --cached <file>` to remove from git but keep locally
-   - Update `.gitignore` to prevent future occurrences
-   - Consider using `git clean -ndx` to preview what would be cleaned
+2. **Release Pipeline** (`release-build.yml`)
+   - Runs when a release is created
+   - Builds all distribution packages
+   - Creates Flatpak bundle
+   - Attaches all artifacts to the release
+   - Builds for all supported platforms
