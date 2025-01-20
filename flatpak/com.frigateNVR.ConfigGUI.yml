@@ -24,6 +24,9 @@ finish-args:
 build-options:
   env:
     NPM_CONFIG_LOGLEVEL: info
+  append-path: /usr/lib/sdk/node20/bin
+  prepend-pkg-config-path: /usr/lib/sdk/node20/lib/pkgconfig
+  prepend-ld-library-path: /usr/lib/sdk/node20/lib
 
 cleanup:
   - /include
@@ -38,11 +41,14 @@ modules:
     buildsystem: simple
     build-commands:
       - |
-        # Enable Node.js SDK extension
+        # Set up Node.js environment
         . /usr/lib/sdk/node20/enable.sh
+        export FLATPAK_BUILDER_BUILDDIR="$PWD"
+        export FLATPAK_ID="com.frigateNVR.ConfigGUI"
 
         # Install dependencies and build
-        npm ci
+        npm config set prefix /app
+        npm ci --offline --cache=/run/build/frigate-config-gui/npm-cache
         npm run build
 
         # Install application
@@ -61,6 +67,8 @@ modules:
         # Create wrapper script
         cat > /app/bin/frigate-config-gui-wrapper << 'EOL'
         #!/bin/sh
+        export PATH="/app/bin:$PATH"
+        export NODE_PATH="/app/lib/node_modules"
         exec /app/bin/frigate-config-gui "$@"
         EOL
         chmod +x /app/bin/frigate-config-gui-wrapper
