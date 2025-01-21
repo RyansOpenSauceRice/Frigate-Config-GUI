@@ -79,22 +79,72 @@ npm run electron:build:win
 npm run electron:build:mac
 ```
 
-## Build Artifacts
+## Repository Maintenance
 
-The following build artifacts are automatically ignored by git:
+### Build Artifacts and Git Hygiene
 
-- `node_modules/` - npm dependencies
-- `dist/` - Build outputs
-- `build-dir/` - Flatpak build directory
-- `.flatpak-builder/` - Flatpak cache
-- `*.flatpak` - Flatpak bundles
-- Development files (`.env`, `.env.local`)
-- IDE files (`.vscode/`, `.idea/`)
+⚠️ **IMPORTANT: Keep the Repository Clean** ⚠️
 
-To check for untracked build artifacts:
-```bash
-git status --ignored
-```
+To maintain a clean and efficient repository:
+
+1. **NEVER commit build artifacts or dependencies**
+   - Build outputs (`dist/`, `build/`)
+   - Dependencies (`node_modules/`)
+   - Cache files (`.cache/`, `.npm/`)
+   - Generated files (`*.tsbuildinfo`, `*.asar`)
+
+2. **ALWAYS update .gitignore when adding new tools**
+   - Add patterns for new build outputs
+   - Include tool-specific cache directories
+   - Document why patterns were added
+
+3. **Check for untracked files before committing**
+   ```bash
+   # Show all untracked files, including ignored ones
+   git status --ignored
+   
+   # Preview what would be cleaned
+   git clean -ndx
+   ```
+
+4. **Clean up if needed**
+   ```bash
+   # Remove untracked files (use with caution!)
+   git clean -fdx
+   ```
+
+### Common Patterns to Ignore
+
+The `.gitignore` file is configured to exclude:
+
+1. **Build Outputs**
+   - `dist/`, `build/`, `release/`
+   - `*.flatpak`, `.flatpak-builder/`
+   - `*.asar`, `*.tsbuildinfo`
+
+2. **Dependencies**
+   - `node_modules/`
+   - `.npm/`, `.yarn/`
+   - Package manager logs
+
+3. **Cache and Temporary Files**
+   - `.cache/`, `.vite/`, `.swc/`
+   - `*.cache`, `.parcel-cache/`
+   - Editor files (`.swp`, `~`)
+
+4. **Environment and Settings**
+   - `.env.local`, `.env.*.local`
+   - `.vscode/`, `.idea/`
+   - `.DS_Store`, `Thumbs.db`
+
+### For AI Agents
+
+🤖 **Note for AI Assistants**:
+1. Always check `.gitignore` before committing new files
+2. Update `.gitignore` when adding new tools or build processes
+3. Avoid committing large files (>100KB) without explicit approval
+4. Document any changes to build artifacts in PR descriptions
+5. Use `git status --ignored` to verify what's being excluded
 
 ## CI/CD Pipeline
 
