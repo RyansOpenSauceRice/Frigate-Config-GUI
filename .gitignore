@@ -86,6 +86,14 @@ out/
 .rollup.cache/
 .vite/
 .swc/
+.turbo/
+.webpack/
+.esbuild/
+
+# Generated files
+*.generated.*
+generated/
+*.generated/
 
 # Editor directories and files
 .idea/
@@ -95,3 +103,11 @@ out/
 *~
 .DS_Store
 Thumbs.db
+
+# Temporary files
+*.bak
+*.backup
+*.old
+*.tmp.*
+temp/
+tmp/

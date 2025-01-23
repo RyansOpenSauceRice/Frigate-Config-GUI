@@ -87,6 +87,14 @@ flatpak install frigate-config-gui.flatpak
 
 Contributions are welcome! Please read our contributing guidelines (coming soon) before submitting pull requests.
 
+### Repository Cleanliness
+
+To maintain a clean repository:
+- Always check the `.gitignore` file before committing to ensure build artifacts and temporary files are properly excluded
+- Do not commit generated files, build outputs, or cache directories
+- Clean your build environment using `git clean -fdx` if needed (use with caution - this removes all untracked files)
+- Run builds in the designated build directories that are already in `.gitignore`
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE)
