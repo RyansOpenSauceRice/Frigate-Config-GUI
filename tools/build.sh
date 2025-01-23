@@ -38,6 +38,7 @@ check_dependencies() {
     echo "Checking dependencies..."
     local missing_deps=()
     
+    # Check for required commands
     for cmd in flatpak flatpak-builder curl sha256sum; do
         if ! command -v $cmd &> /dev/null; then
             missing_deps+=($cmd)
@@ -47,6 +48,30 @@ check_dependencies() {
     if [ ${#missing_deps[@]} -ne 0 ]; then
         echo -e "${RED}Error: Missing dependencies: ${missing_deps[*]}${NC}"
         echo "Please install the missing dependencies and try again."
+        exit 1
+    fi
+
+    # Check for required Flatpak runtimes and SDK extensions
+    echo "Checking Flatpak dependencies..."
+    local missing_flatpak=()
+    
+    # Function to check if a Flatpak runtime/SDK is installed
+    check_flatpak() {
+        local name=$1
+        local version=$2
+        if ! flatpak list --runtime | grep -q "$name.*$version"; then
+            missing_flatpak+=("$name//$version")
+        fi
+    }
+    
+    check_flatpak "org.freedesktop.Platform" "24.08"
+    check_flatpak "org.freedesktop.Sdk" "24.08"
+    check_flatpak "org.freedesktop.Sdk.Extension.node20" "24.08"
+    
+    if [ ${#missing_flatpak[@]} -ne 0 ]; then
+        echo -e "${RED}Error: Missing Flatpak dependencies: ${missing_flatpak[*]}${NC}"
+        echo "Please install them using:"
+        echo "flatpak install flathub ${missing_flatpak[*]}"
         exit 1
     fi
 }

@@ -1,4 +1,4 @@
-name: Build Flatpak
+name: Build Flatpak Package
 
 on:
   push:
@@ -20,10 +20,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y flatpak flatpak-builder
 
-      - name: Add Flathub remote
+      - name: Add Flathub remote and install dependencies
         run: |
           sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08
+          sudo flatpak install -y flathub \
+            org.freedesktop.Platform//24.08 \
+            org.freedesktop.Sdk//24.08 \
+            org.freedesktop.Sdk.Extension.node20//24.08
 
       - name: Build Flatpak
         run: |
