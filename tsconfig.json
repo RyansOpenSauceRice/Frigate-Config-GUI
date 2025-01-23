@@ -17,9 +17,12 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["electron-app/src/*"],
+      "@main/*": ["electron-app/src/main/*"],
+      "@renderer/*": ["electron-app/src/renderer/*"],
+      "@shared/*": ["electron-app/src/shared/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["electron-app/src/**/*"],
   "exclude": ["node_modules", "build", "dist"]
 }
