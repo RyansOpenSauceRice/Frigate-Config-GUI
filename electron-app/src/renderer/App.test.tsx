@@ -1,5 +1,8 @@
+/// <reference types="@types/jest" />
+/// <reference types="@testing-library/jest-dom" />
 /** @jest-environment jsdom */
 import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import App from './App';
 
 describe('App', () => {
