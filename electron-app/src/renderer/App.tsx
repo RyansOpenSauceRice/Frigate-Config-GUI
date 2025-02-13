@@ -166,19 +166,19 @@ export default function App() {
         <TabPanel value={tabValue} index={0}>
           <CameraConfig
             config={config?.cameras}
-            onChange={(cameras) => setConfig(prev => prev ? { ...prev, cameras } : null)}
+            onChange={(cameras) => setConfig((prev: FrigateConfig | null) => prev ? { ...prev, cameras } : null)}
           />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           <MQTTConfig
             config={config?.mqtt}
-            onChange={(mqtt) => setConfig(prev => prev ? { ...prev, mqtt } : null)}
+            onChange={(mqtt) => setConfig((prev: FrigateConfig | null) => prev ? { ...prev, mqtt } : null)}
           />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
           <AudioConfig
             config={config?.audio}
-            onChange={(audio) => setConfig(prev => prev ? { ...prev, audio } : null)}
+            onChange={(audio) => setConfig((prev: FrigateConfig | null) => prev ? { ...prev, audio } : null)}
           />
         </TabPanel>
       </Container>
