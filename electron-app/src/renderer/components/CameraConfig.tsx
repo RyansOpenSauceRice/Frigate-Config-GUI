@@ -141,7 +141,7 @@ export default function CameraConfig({ config, onChange }: Props) {
                     </Box>
                   </Grid>
 
-                  {cameraConfig.ffmpeg.inputs.map((input, index) => (
+                  {cameraConfig.ffmpeg.inputs.map((input: ICameraConfig['ffmpeg']['inputs'][0], index: number) => (
                     <Grid item xs={12} key={index}>
                       <Card variant="outlined">
                         <CardContent>
