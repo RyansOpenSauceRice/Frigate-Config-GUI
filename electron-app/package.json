@@ -34,14 +34,15 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.1.4",
-    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^14.3.1",
     "@types/electron": "^1.6.10",
-    "@types/jest": "^29.5.10",
+    "@types/jest": "^29.5.14",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.9.4",
     "@types/react": "^18.2.38",
     "@types/react-dom": "^18.2.17",
+    "@types/testing-library__react": "^10.0.1",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "@vitejs/plugin-react": "^4.2.0",
