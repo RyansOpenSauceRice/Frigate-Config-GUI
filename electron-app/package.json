@@ -11,6 +11,7 @@
     "build": "npm run build:vite && npm run build:electron",
     "build:vite": "vite build",
     "build:electron": "tsc -p tsconfig.electron.json",
+    "type-check": "tsc --noEmit",
     "test": "jest",
     "lint": "eslint . --ext .ts,.tsx",
     "package": "electron-builder build --mac --win --linux"
