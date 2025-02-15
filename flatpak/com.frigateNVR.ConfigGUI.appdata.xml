@@ -19,18 +19,42 @@
       <li>Import/export configuration files</li>
     </ul>
   </description>
+  <categories>
+    <category>Utility</category>
+    <category>Settings</category>
+  </categories>
   <launchable type="desktop-id">com.frigateNVR.ConfigGUI.desktop</launchable>
   <screenshots>
     <screenshot type="default">
       <caption>Main configuration window</caption>
-      <image>https://raw.githubusercontent.com/YourRepo/Frigate-Config-GUI/main/screenshots/main.png</image>
+      <image>https://raw.githubusercontent.com/RyansOpenSauceRice/Frigate-Config-GUI/main/screenshots/main.png</image>
     </screenshot>
   </screenshots>
-  <url type="homepage">https://github.com/YourRepo/Frigate-Config-GUI</url>
+  <url type="homepage">https://github.com/RyansOpenSauceRice/Frigate-Config-GUI</url>
+  <url type="bugtracker">https://github.com/RyansOpenSauceRice/Frigate-Config-GUI/issues</url>
+  <url type="help">https://github.com/RyansOpenSauceRice/Frigate-Config-GUI/wiki</url>
   <developer_name>OpenHands</developer_name>
   <update_contact>openhands@all-hands.dev</update_contact>
-  <content_rating type="oars-1.1" />
+  <content_rating type="oars-1.1">
+    <content_attribute id="social-info">moderate</content_attribute>
+    <content_attribute id="social-audio">none</content_attribute>
+    <content_attribute id="social-location">none</content_attribute>
+    <content_attribute id="social-contacts">none</content_attribute>
+    <content_attribute id="money-purchasing">none</content_attribute>
+    <content_attribute id="money-gambling">none</content_attribute>
+  </content_rating>
   <releases>
+    <release version="2025.2.14" date="2025-02-14">
+      <description>
+        <p>Latest release with improvements:</p>
+        <ul>
+          <li>Fixed Electron build configuration</li>
+          <li>Updated Flatpak packaging</li>
+          <li>Improved error handling</li>
+          <li>Added type checking</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.1.0" date="2024-01-09">
       <description>
         <p>Initial release with basic configuration capabilities:</p>
