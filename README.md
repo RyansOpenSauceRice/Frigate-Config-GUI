@@ -17,6 +17,11 @@ A professional desktop application for managing Frigate NVR configurations throu
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.0-blue)](https://reactjs.org/)
 
+<!-- 
+Release checklist badge (add when available on Flathub):
+[![Flatpak](https://img.shields.io/badge/Flatpak-available-green)](https://flathub.org)
+-->
+
 ## Overview
 
 Frigate Config GUI simplifies the configuration of Frigate NVR systems by providing a modern, intuitive interface for managing YAML configurations. Built with enterprise-grade technologies and designed for users of all technical levels.
