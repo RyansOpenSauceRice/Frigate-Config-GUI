@@ -33,14 +33,17 @@ This project is being developed with the intention of eventual adoption by the F
 - **Frontend:**
   - React (UI library)
   - TypeScript (type-safe JavaScript)
-  - Material-UI (component library)
+  - Vite (Build tool)
+  - Radix UI (Component library)
+  - TailwindCSS (Styling)
 - **Development Approach:** Test Driven Development (TDD)
 - **Distribution:** Flatpak
 - **Core Dependencies:**
   - js-yaml for YAML processing
-  - Jest for testing
+  - Vitest for testing
   - Electron Builder for packaging
   - ESLint + Prettier for code quality
+  - i18next for internationalization
 
 ## Key Features
 1. **Configuration File Management**
@@ -74,12 +77,48 @@ This project is being developed with the intention of eventual adoption by the F
 - Ensure cross-distribution compatibility
 - Provide easy installation process
 
+## Internationalization (i18n) Requirements
+
+### Supported Languages
+The application must support the following UN official languages:
+1. Arabic (ar)
+2. Chinese (Mandarin) (zh)
+3. English (en) - Default
+4. French (fr)
+5. Russian (ru)
+6. Spanish (es)
+
+### Translation Requirements
+- All user interface elements must be translatable
+- Right-to-left (RTL) support for Arabic
+- Language-specific formatting for:
+  - Numbers
+  - Dates
+  - Units (e.g., bytes, temperatures)
+- Fallback to English for untranslated strings
+- Dynamic language switching without application restart
+- Proper font support for all character sets
+
+### Translation Management
+- Use i18next for translation management
+- Maintain separate translation files per language
+- Support for pluralization rules
+- Context-aware translations
+- Support for HTML formatting in translations
+- Automated translation status reporting
+
+### Accessibility Considerations
+- Screen reader compatibility across all languages
+- Keyboard navigation support with localized shortcuts
+- High contrast mode support with translated labels
+- Font size adjustments that work across all languages
+
 ## Future Considerations
-- Support for different Frigate versions
+- Support for additional languages beyond UN official languages
 - Configuration templates
 - Backup and restore functionality
 - Configuration comparison tools
-- Multi-language support
+- Regional format preferences (dates, numbers, etc.)
 
 ## Project Structure
 ```
