@@ -271,5 +271,40 @@
       "tooltip": "Only save snapshots when objects are in these zones",
       "placeholder": "zone1,zone2,zone3"
     }
+  },
+  "audio": {
+    "title": "Audio Events",
+    "enabled": {
+      "label": "Enable Audio Events",
+      "tooltip": "Enable or disable audio event detection for this camera"
+    },
+    "min_volume": {
+      "label": "Minimum Volume",
+      "tooltip": "Minimum RMS volume required to run audio detection. Lower values are more sensitive.",
+      "value": "Volume: {{value}}"
+    },
+    "max_not_heard": {
+      "label": "Maximum Silent Time",
+      "tooltip": "Number of seconds without detected audio before ending the event",
+      "value": "{{value}} seconds"
+    },
+    "listen": {
+      "label": "Audio Types",
+      "tooltip": "Select which types of audio events to detect",
+      "types": {
+        "bark": "Dog Bark",
+        "fire_alarm": "Fire Alarm",
+        "scream": "Scream",
+        "speech": "Speech",
+        "yell": "Yelling"
+      }
+    },
+    "filters": {
+      "threshold": {
+        "label": "Detection Threshold",
+        "tooltip": "Minimum confidence score required to trigger an audio event",
+        "value": "{{value}} confidence"
+      }
+    }
   }
 }
