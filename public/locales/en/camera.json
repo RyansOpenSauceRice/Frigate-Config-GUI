@@ -219,5 +219,57 @@
         "placeholder": "person,car,dog"
       }
     }
+  },
+  "snapshots": {
+    "title": "Snapshot Settings",
+    "enabled": {
+      "label": "Enable Snapshots",
+      "tooltip": "Enable or disable snapshot capture for this camera"
+    },
+    "clean_copy": {
+      "label": "Save Clean Copy",
+      "tooltip": "Save a clean PNG copy of the snapshot without annotations"
+    },
+    "timestamp": {
+      "label": "Show Timestamp",
+      "tooltip": "Print timestamp on snapshots"
+    },
+    "bounding_box": {
+      "label": "Show Bounding Box",
+      "tooltip": "Draw object bounding box on snapshots"
+    },
+    "crop": {
+      "label": "Crop to Object",
+      "tooltip": "Crop snapshots to focus on the detected object"
+    },
+    "height": {
+      "label": "Height",
+      "placeholder": "175",
+      "tooltip": "Height to resize snapshots to. Width will be adjusted to maintain aspect ratio."
+    },
+    "quality": {
+      "label": "JPEG Quality",
+      "tooltip": "Quality of the JPEG compression (1-100). Higher values mean better quality but larger file size.",
+      "value": "Quality: {{value}}%"
+    },
+    "retain": {
+      "title": "Retention Settings",
+      "default": {
+        "label": "Default Retention Days",
+        "tooltip": "Number of days to keep snapshots by default"
+      },
+      "objects": {
+        "label": "Object-Specific Retention",
+        "tooltip": "Set different retention periods for specific object types",
+        "object_placeholder": "Object type",
+        "days_placeholder": "Days",
+        "add": "Add Object Retention"
+      }
+    },
+    "required_zones": {
+      "label": "Required Zones",
+      "tooltip": "Only save snapshots when objects are in these zones",
+      "placeholder": "zone1,zone2,zone3"
+    }
   }
 }
