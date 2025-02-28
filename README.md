@@ -1,6 +1,6 @@
 # Frigate Config GUI
 
-⚠️ **DEVELOPMENT STATUS: ALPHA - NOT READY FOR PRODUCTION USE** ⚠️
+**DEVELOPMENT STATUS: ALPHA**
 
 This project is in early alpha development and is currently:
 - Under heavy development with frequent breaking changes
@@ -31,8 +31,6 @@ Frigate Config GUI simplifies the configuration of Frigate NVR systems by provid
 - **Visual Configuration**: Intuitive interface for all Frigate settings
 - **Real-time Validation**: Immediate feedback on configuration changes
 - **Multi-language Support**: Will support all UN official languages
-- **Enterprise Ready**: Will support automated deployment and silent installation
-- **Cross-platform**: Currently Linux only, Windows support planned
 
 Note: Many features are still under development. Please check the project status before using in any environment.
 
@@ -103,8 +101,6 @@ This project follows Test-Driven Development (TDD) practices and uses modern too
 
 - Updates are distributed through Flathub
 - Automatic update checks are built-in
-- Security updates are prioritized
-- LTS versions are supported for 24 months
 
 ## License
 
