@@ -1,0 +1,223 @@
+{
+  "fields": {
+    "name": {
+      "label": "Camera Name",
+      "placeholder": "Enter a unique name for your camera",
+      "tooltip": "A unique identifier for your camera. Use only letters, numbers, underscores and hyphens."
+    },
+    "enabled": {
+      "label": "Enable Camera",
+      "tooltip": "Enable or disable this camera. When disabled, no streams will be processed but recordings will still be accessible."
+    }
+  },
+  "tabs": {
+    "ffmpeg": "FFmpeg",
+    "detect": "Detection",
+    "motion": "Motion",
+    "zones": "Zones",
+    "record": "Recording",
+    "snapshots": "Snapshots"
+  },
+  "ffmpeg": {
+    "title": "FFmpeg Stream Configuration",
+    "add_input": "Add new input stream",
+    "remove_input": "Remove this input stream",
+    "input": "Input Stream",
+    "path": {
+      "label": "Stream URL",
+      "placeholder": "rtsp://username:password@camera-ip:554/stream",
+      "tooltip": "The RTSP, HTTP or other supported stream URL for your camera"
+    },
+    "roles": {
+      "label": "Stream Roles",
+      "tooltip": "Define how this stream will be used",
+      "detect": "Object Detection",
+      "record": "Recording",
+      "audio": "Audio Detection"
+    },
+    "global_args": {
+      "label": "Global Arguments",
+      "placeholder": "-hide_banner -loglevel warning",
+      "tooltip": "Global FFmpeg arguments for this input stream"
+    },
+    "hwaccel_args": {
+      "label": "Hardware Acceleration",
+      "placeholder": "auto",
+      "tooltip": "Hardware acceleration arguments for this input stream. Use 'auto' for automatic detection."
+    },
+    "input_args": {
+      "label": "Input Arguments",
+      "placeholder": "-avoid_negative_ts make_zero -fflags +genpts+discardcorrupt",
+      "tooltip": "FFmpeg input arguments for this stream"
+    },
+    "output_args": {
+      "title": "Output Arguments",
+      "detect": {
+        "label": "Detection Output",
+        "placeholder": "-f rawvideo -pix_fmt yuv420p",
+        "tooltip": "FFmpeg arguments for the detection output stream"
+      },
+      "record": {
+        "label": "Recording Output",
+        "placeholder": "-f segment -segment_time 10 -segment_format mp4",
+        "tooltip": "FFmpeg arguments for the recording output stream"
+      }
+    }
+  },
+  "motion": {
+    "title": "Motion Detection",
+    "enabled": {
+      "label": "Enable Motion Detection",
+      "tooltip": "Enable or disable motion detection for this camera. Required for object detection."
+    },
+    "threshold": {
+      "label": "Detection Threshold",
+      "tooltip": "The threshold for determining if a pixel has changed enough to be counted as motion. Higher values make detection less sensitive (1-255).",
+      "value": "Threshold: {{value}}"
+    },
+    "contour_area": {
+      "label": "Minimum Motion Area",
+      "tooltip": "Minimum size in pixels that counts as motion. Higher values prevent smaller movements from triggering detection.",
+      "value": "Area: {{value}} pixels"
+    },
+    "frame_alpha": {
+      "label": "Frame Alpha",
+      "tooltip": "How quickly new objects are averaged into the background. Higher values mean faster averaging.",
+      "value": "Alpha: {{value}}"
+    },
+    "frame_height": {
+      "label": "Frame Height",
+      "tooltip": "Height of the resized motion frame. Higher values give more detailed motion detection but use more CPU."
+    },
+    "improve_contrast": {
+      "label": "Improve Contrast",
+      "tooltip": "Enable dynamic contrast improvement. Helps with night detection but may increase false positives during the day."
+    },
+    "mask": {
+      "label": "Motion Mask",
+      "placeholder": "0.0,0.0,1.0,0.0,1.0,1.0,0.0,1.0",
+      "tooltip": "Coordinates to mask out areas from motion detection. Format: x1,y1,x2,y2,...",
+      "error": {
+        "invalid": "Invalid mask format. Use x,y coordinates between 0 and 1."
+      }
+    }
+  },
+  "detect": {
+    "title": "Object Detection",
+    "enabled": {
+      "label": "Enable Object Detection",
+      "tooltip": "Enable or disable object detection for this camera. Requires motion detection to be enabled."
+    },
+    "width": {
+      "label": "Detection Width",
+      "placeholder": "1280",
+      "tooltip": "Width of the frame for object detection. Lower values use less CPU but may miss small objects."
+    },
+    "height": {
+      "label": "Detection Height",
+      "placeholder": "720",
+      "tooltip": "Height of the frame for object detection. Lower values use less CPU but may miss small objects."
+    },
+    "fps": {
+      "label": "Detection FPS",
+      "tooltip": "Frames per second for object detection. Higher values are more accurate but use more CPU.",
+      "value": "{{value}} FPS"
+    },
+    "advanced": {
+      "title": "Advanced Detection Settings"
+    },
+    "min_initialized": {
+      "label": "Minimum Initialized Frames",
+      "placeholder": "2",
+      "tooltip": "Number of consecutive detection hits required before tracking an object",
+      "description": "Higher values reduce false positives but may miss quick-moving objects"
+    },
+    "max_disappeared": {
+      "label": "Maximum Disappeared Frames",
+      "placeholder": "25",
+      "tooltip": "Number of frames without detection before stopping object tracking",
+      "description": "Higher values track objects longer but may cause false tracking"
+    }
+  },
+  "zones": {
+    "title": "Detection Zones",
+    "add": "Add Zone",
+    "add_title": "Add New Zone",
+    "edit_title": "Edit Zone",
+    "empty": "No zones configured. Click the + button to add a zone.",
+    "tracking": "Tracking: {{objects}}",
+    "tracking_all": "Tracking all objects",
+    "visual": {
+      "upload": "Upload image or video",
+      "play": "Play video",
+      "pause": "Pause video",
+      "clear": "Clear media",
+      "instructions": "Click to add points. Drag points to adjust. Upload an image or video to help with zone placement."
+    },
+    "editor": {
+      "name": {
+        "label": "Zone Name",
+        "placeholder": "Enter a unique name for this zone"
+      },
+      "coordinates": {
+        "label": "Zone Coordinates",
+        "placeholder": "0.0,0.0,1.0,0.0,1.0,1.0,0.0,1.0",
+        "tooltip": "Define the zone area using x,y coordinates",
+        "description": "Enter coordinates as x,y pairs between 0 and 1, separated by commas. The coordinates form a polygon."
+      },
+      "objects": {
+        "label": "Objects to Track"
+      },
+      "inertia": {
+        "label": "Inertia",
+        "tooltip": "Number of consecutive frames required for an object to be considered present in the zone"
+      },
+      "loitering_time": {
+        "label": "Loitering Time",
+        "tooltip": "Number of seconds that an object must remain in the zone to trigger loitering detection"
+      }
+    }
+  },
+  "record": {
+    "title": "Recording Settings",
+    "enabled": {
+      "label": "Enable Recording",
+      "tooltip": "Enable or disable recording for this camera"
+    },
+    "retain": {
+      "title": "Retention Settings",
+      "days": {
+        "label": "Retention Days",
+        "tooltip": "Number of days to keep recordings. Set to 0 to only retain recordings based on events."
+      },
+      "mode": {
+        "label": "Retention Mode",
+        "tooltip": "Choose what type of recordings to retain",
+        "all": "All Recordings",
+        "motion": "Motion Only",
+        "active_objects": "Active Objects Only"
+      }
+    },
+    "events": {
+      "title": "Event Recording Settings",
+      "pre_capture": {
+        "label": "Pre-Capture Seconds",
+        "tooltip": "Number of seconds to include before the event"
+      },
+      "post_capture": {
+        "label": "Post-Capture Seconds",
+        "tooltip": "Number of seconds to continue recording after the event"
+      },
+      "required_zones": {
+        "label": "Required Zones",
+        "tooltip": "Only record events when objects enter these zones",
+        "placeholder": "zone1,zone2,zone3"
+      },
+      "objects": {
+        "label": "Objects to Record",
+        "tooltip": "Only record events for these object types",
+        "placeholder": "person,car,dog"
+      }
+    }
+  }
+}

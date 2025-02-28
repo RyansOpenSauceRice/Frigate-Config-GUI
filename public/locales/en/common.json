@@ -1,0 +1,84 @@
+{
+  "app": {
+    "title": "Frigate Config GUI",
+    "description": "Configure your Frigate NVR system easily"
+  },
+  "navigation": {
+    "cameras": "Cameras",
+    "detectors": "Detectors",
+    "recordings": "Recordings",
+    "settings": "Settings"
+  },
+  "camera": {
+    "add": "Add Camera",
+    "edit": "Edit Camera",
+    "delete": "Delete Camera",
+    "fields": {
+      "name": {
+        "label": "Camera Name",
+        "placeholder": "Enter camera name",
+        "tooltip": "A unique name for your camera"
+      },
+      "url": {
+        "label": "RTSP URL",
+        "placeholder": "rtsp://username:password@camera-ip:554/stream",
+        "tooltip": "The RTSP stream URL for your camera"
+      }
+    }
+  },
+  "tooltips": {
+    "addCamera": "Click to add a new camera to your Frigate configuration",
+    "cameraSettings": "Configure camera-specific settings like resolution and frame rate",
+    "detectorSettings": "Adjust object detection settings and sensitivity"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidUrl": "Please enter a valid URL",
+    "uniqueName": "This name is already in use"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success!"
+  },
+  "config": {
+    "actions": {
+      "import_file": "Import configuration from file",
+      "export_file": "Export configuration to file",
+      "github": "GitHub integration"
+    },
+    "github": {
+      "title": "GitHub Configuration",
+      "owner": "Repository Owner",
+      "repo": "Repository Name",
+      "path": "File Path",
+      "branch": "Branch Name",
+      "message": "Commit Message",
+      "import": "Import from GitHub",
+      "export": "Save to GitHub"
+    },
+    "errors": {
+      "invalid_yaml": "Invalid YAML format",
+      "validation_failed": "Configuration validation failed",
+      "github_token_missing": "GitHub token not set",
+      "github_api_error": "GitHub API error",
+      "file_read_error": "Failed to read file",
+      "file_write_error": "Failed to write file"
+    },
+    "success": {
+      "imported": "Configuration imported successfully",
+      "exported": "Configuration exported successfully",
+      "github_saved": "Configuration saved to GitHub"
+    },
+    "preview": {
+      "button": "Preview Configuration",
+      "title": "Configuration Preview",
+      "description": "This is a preview of your Frigate configuration in YAML format. Click the copy button to copy it to your clipboard.",
+      "copied": "Configuration copied to clipboard"
+    }
+  }
+}
