@@ -80,5 +80,25 @@
       "description": "This is a preview of your Frigate configuration in YAML format. Click the copy button to copy it to your clipboard.",
       "copied": "Configuration copied to clipboard"
     }
+  },
+  "semantic_search": {
+    "title": "Semantic Search",
+    "enabled": {
+      "label": "Enable Semantic Search",
+      "tooltip": "Enable semantic search capabilities for object descriptions"
+    },
+    "model_size": {
+      "label": "Model Size",
+      "tooltip": "Choose model size. Small runs on CPU, large runs on GPU.",
+      "options": {
+        "small": "Small (CPU)",
+        "large": "Large (GPU)"
+      }
+    },
+    "reindex": {
+      "label": "Reindex Database",
+      "tooltip": "Re-index embeddings database from historical tracked objects"
+    },
+    "warning": "Semantic search must be enabled for Generative AI features to work. This feature requires additional computational resources."
   }
 }

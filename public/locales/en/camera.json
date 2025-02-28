@@ -469,5 +469,59 @@
         "value": "{{value}} seconds"
       }
     }
+  },
+  "genai": {
+    "title": "Generative AI",
+    "enabled": {
+      "label": "Enable AI Descriptions",
+      "tooltip": "Enable AI-generated descriptions for detected objects"
+    },
+    "provider": {
+      "label": "AI Provider",
+      "tooltip": "Choose which AI service to use for generating descriptions",
+      "options": {
+        "ollama": "Ollama (Local)",
+        "gemini": "Google Gemini",
+        "openai": "OpenAI"
+      }
+    },
+    "api_key": {
+      "label": "API Key",
+      "tooltip": "API key for Gemini or OpenAI",
+      "placeholder": "Enter your API key"
+    },
+    "base_url": {
+      "label": "Base URL",
+      "tooltip": "Base URL for Ollama or OpenAI-compatible API",
+      "placeholder": "http://localhost:11434"
+    },
+    "prompt": {
+      "label": "Default Prompt",
+      "tooltip": "Default prompt for generating descriptions",
+      "placeholder": "Describe the {label} in the sequence of images with as much detail as possible. Do not describe the background.",
+      "variables": "Available variables"
+    },
+    "object_prompts": {
+      "title": "Object-Specific Prompts",
+      "tooltip": "Custom prompts for specific object types",
+      "placeholder": "Enter a custom prompt for this object type",
+      "add": "Add Object Prompt"
+    },
+    "objects": {
+      "label": "Objects to Describe",
+      "tooltip": "Which object types should have AI descriptions generated",
+      "placeholder": "person,car,dog",
+      "available": "Available objects"
+    },
+    "required_zones": {
+      "label": "Required Zones",
+      "tooltip": "Only generate descriptions for objects in these zones",
+      "placeholder": "zone1,zone2,zone3",
+      "available": "Available zones"
+    },
+    "debug_save_thumbnails": {
+      "label": "Save Debug Thumbnails",
+      "tooltip": "Save thumbnails sent to AI for review/debugging"
+    }
   }
 }
