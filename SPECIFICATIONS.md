@@ -72,10 +72,33 @@ This project is being developed with the intention of eventual adoption by the F
   - Continuous integration testing
 
 ## Distribution
+
+### Linux Distribution
 - Package as Flatpak for Linux systems
 - Include all dependencies
 - Ensure cross-distribution compatibility
 - Provide easy installation process
+
+### Windows Distribution
+- Package as MSI installer (not EXE) for better system integration
+- Use WiX Toolset for MSI creation because:
+  - Open source and well-maintained
+  - Industry standard for MSI creation
+  - Supports advanced Windows Installer features
+  - Provides accurate dependency tracking
+  - Enables proper system integration
+  - Supports automated deployment
+- Include automated cleanup on uninstall
+- Support silent installation for enterprise deployment
+- Follow Windows packaging guidelines for proper system integration
+
+### Common Requirements
+- Automated build pipeline for all platforms
+- Consistent versioning across distributions
+- Digital signing for all packages
+- Clear installation instructions
+- Proper dependency bundling
+- Update mechanism for each platform
 
 ## Internationalization (i18n) Requirements
 

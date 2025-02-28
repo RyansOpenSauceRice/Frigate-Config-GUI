@@ -1,100 +1,118 @@
 # Frigate Config GUI
 
-⚠️ **IMPORTANT: This project is in early development and NOT ready for production use** ⚠️
+⚠️ **DEVELOPMENT STATUS: ALPHA - NOT READY FOR PRODUCTION USE** ⚠️
 
-A desktop application for managing Frigate NVR configuration files through an intuitive graphical user interface. This project aims to be adopted by the Frigate NVR organization once it reaches maturity.
+This project is in early alpha development and is currently:
+- Under heavy development with frequent breaking changes
+- Only available for Linux (Windows support planned)
+- Not thoroughly tested in production environments
+- Missing some planned features
+- Subject to significant UI/UX changes
 
-## Project Status
+A professional desktop application for managing Frigate NVR configurations through an intuitive graphical interface. Built with modern web technologies and designed for reliability and ease of use.
 
-This project is currently in active development and is **NOT** ready for general use. Key points:
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Development Status](https://img.shields.io/badge/Status-Alpha-red)](https://github.com/your-org/frigate-config-gui)
+[![Platform](https://img.shields.io/badge/Platform-Linux-green)](https://flathub.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18.0-blue)](https://reactjs.org/)
 
-- ⏳ Early Development Stage
-- 🚫 Not Production Ready
-- 🔄 Rapidly Changing
-- 📋 Core Features Under Development
+<!-- 
+Release checklist badge (add when available on Flathub):
+[![Flatpak](https://img.shields.io/badge/Flatpak-available-green)](https://flathub.org)
+-->
 
 ## Overview
 
-Frigate Config GUI is a desktop application designed to simplify the process of creating and managing configuration files for Frigate NVR systems. Instead of manually editing YAML files, users will be able to configure their Frigate setup through a user-friendly interface.
+Frigate Config GUI simplifies the configuration of Frigate NVR systems by providing a modern, intuitive interface for managing YAML configurations. Built with enterprise-grade technologies and designed for users of all technical levels.
 
-## Planned Features
+### Planned Features
 
-- Create and edit Frigate configuration files
-- GUI-based configuration management
-- Real-time validation
-- YAML file import/export
-- Configuration backup and restore
+- **Visual Configuration**: Intuitive interface for all Frigate settings
+- **Real-time Validation**: Immediate feedback on configuration changes
+- **Multi-language Support**: Will support all UN official languages
+- **Enterprise Ready**: Will support automated deployment and silent installation
+- **Cross-platform**: Currently Linux only, Windows support planned
 
-## Project Goals
+Note: Many features are still under development. Please check the project status before using in any environment.
 
-1. Create a user-friendly configuration interface for Frigate NVR
-2. Simplify the process of setting up and managing Frigate configurations
-3. Integrate with the main Frigate NVR project once mature
-4. Provide a seamless experience for Frigate users of all technical levels
+## Getting Started
 
-## Development
+### Prerequisites
 
-This project follows Test-Driven Development (TDD) practices. For detailed specifications and development guidelines, please refer to [SPECIFICATIONS.md](SPECIFICATIONS.md).
-
-### Requirements
-
-- Node.js (version 18 or higher)
-- npm or yarn for package management
-
-### Building from Source
-
-The application is distributed as a Flatpak package. To build it:
-
-1. Install build dependencies:
-   ```bash
-   # Ubuntu/Debian
-   sudo apt install flatpak flatpak-builder curl
-
-   # Fedora
-   sudo dnf install flatpak flatpak-builder curl
-
-   # Arch Linux
-   sudo pacman -S flatpak flatpak-builder curl
-   ```
-
-2. Add Flathub repository:
-   ```bash
-   flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-   ```
-
-3. Run the build script:
-   ```bash
-   chmod +x tools/build.sh
-   ./tools/build.sh
-   ```
-
-The script will:
-- Check for required dependencies
-- Update Node.js SHA256 checksums automatically
-- Build the Flatpak package
-- Create a single-file bundle at `frigate-config-gui.flatpak`
+- Node.js 18 or higher
+- npm or yarn
+- For Linux: flatpak and flatpak-builder
+- For Windows: WiX Toolset (for building MSI)
 
 ### Installation
 
-⚠️ Note: The application is still in early development and not ready for general use.
+⚠️ **Note: This application is in early alpha and not yet available on Flathub**
 
-Once built, you can install the Flatpak bundle:
-```bash
-flatpak install frigate-config-gui.flatpak
-```
+The application will be distributed through Flathub for Linux systems. For now, you must build from source:
+
+1. Follow the [Building from Source](#building-from-source) instructions below
+2. Use at your own risk - this is alpha software
+3. Report issues on GitHub
+4. Backup your Frigate configuration before using this tool
+
+For detailed instructions, see our [Installation Guide](docs/user/installation.md).
+
+### Building from Source
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-org/frigate-config-gui.git
+   cd frigate-config-gui
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Build the application:
+   ```bash
+   npm run build
+   ```
+
+For detailed build instructions, see our [Build Guide](docs/dev/building.md).
+
+## Documentation
+
+- [User Guide](docs/user/README.md)
+- [Developer Documentation](docs/dev/README.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Technical Specifications](SPECIFICATIONS.md)
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines (coming soon) before submitting pull requests.
+We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
 
-### Repository Cleanliness
+### Development Process
 
-To maintain a clean repository:
-- Always check the `.gitignore` file before committing to ensure build artifacts and temporary files are properly excluded
-- Do not commit generated files, build outputs, or cache directories
-- Clean your build environment using `git clean -fdx` if needed (use with caution - this removes all untracked files)
-- Run builds in the designated build directories that are already in `.gitignore`
+This project follows Test-Driven Development (TDD) practices and uses modern tooling:
+
+- TypeScript for type safety
+- React with Radix UI for components
+- TailwindCSS for styling
+- Vitest for testing
+- Electron for cross-platform support
+
+## Updates and Maintenance
+
+- Updates are distributed through Flathub
+- Automatic update checks are built-in
+- Security updates are prioritized
+- LTS versions are supported for 24 months
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Frigate NVR](https://github.com/blakeblackshear/frigate) - The excellent NVR system this tool configures
+- [Electron](https://www.electronjs.org/) - Cross-platform desktop framework
+- [React](https://reactjs.org/) - UI framework
+- [Radix UI](https://www.radix-ui.com/) - Accessible component system

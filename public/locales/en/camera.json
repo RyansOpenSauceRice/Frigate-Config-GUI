@@ -219,5 +219,309 @@
         "placeholder": "person,car,dog"
       }
     }
+  },
+  "snapshots": {
+    "title": "Snapshot Settings",
+    "enabled": {
+      "label": "Enable Snapshots",
+      "tooltip": "Enable or disable snapshot capture for this camera"
+    },
+    "clean_copy": {
+      "label": "Save Clean Copy",
+      "tooltip": "Save a clean PNG copy of the snapshot without annotations"
+    },
+    "timestamp": {
+      "label": "Show Timestamp",
+      "tooltip": "Print timestamp on snapshots"
+    },
+    "bounding_box": {
+      "label": "Show Bounding Box",
+      "tooltip": "Draw object bounding box on snapshots"
+    },
+    "crop": {
+      "label": "Crop to Object",
+      "tooltip": "Crop snapshots to focus on the detected object"
+    },
+    "height": {
+      "label": "Height",
+      "placeholder": "175",
+      "tooltip": "Height to resize snapshots to. Width will be adjusted to maintain aspect ratio."
+    },
+    "quality": {
+      "label": "JPEG Quality",
+      "tooltip": "Quality of the JPEG compression (1-100). Higher values mean better quality but larger file size.",
+      "value": "Quality: {{value}}%"
+    },
+    "retain": {
+      "title": "Retention Settings",
+      "default": {
+        "label": "Default Retention Days",
+        "tooltip": "Number of days to keep snapshots by default"
+      },
+      "objects": {
+        "label": "Object-Specific Retention",
+        "tooltip": "Set different retention periods for specific object types",
+        "object_placeholder": "Object type",
+        "days_placeholder": "Days",
+        "add": "Add Object Retention"
+      }
+    },
+    "required_zones": {
+      "label": "Required Zones",
+      "tooltip": "Only save snapshots when objects are in these zones",
+      "placeholder": "zone1,zone2,zone3"
+    }
+  },
+  "audio": {
+    "title": "Audio Events",
+    "enabled": {
+      "label": "Enable Audio Events",
+      "tooltip": "Enable or disable audio event detection for this camera"
+    },
+    "min_volume": {
+      "label": "Minimum Volume",
+      "tooltip": "Minimum RMS volume required to run audio detection. Lower values are more sensitive.",
+      "value": "Volume: {{value}}"
+    },
+    "max_not_heard": {
+      "label": "Maximum Silent Time",
+      "tooltip": "Number of seconds without detected audio before ending the event",
+      "value": "{{value}} seconds"
+    },
+    "listen": {
+      "label": "Audio Types",
+      "tooltip": "Select which types of audio events to detect",
+      "types": {
+        "bark": "Dog Bark",
+        "fire_alarm": "Fire Alarm",
+        "scream": "Scream",
+        "speech": "Speech",
+        "yell": "Yelling"
+      }
+    },
+    "filters": {
+      "threshold": {
+        "label": "Detection Threshold",
+        "tooltip": "Minimum confidence score required to trigger an audio event",
+        "value": "{{value}} confidence"
+      }
+    }
+  },
+  "birdseye": {
+    "title": "Birdseye View",
+    "enabled": {
+      "label": "Enable Birdseye",
+      "tooltip": "Enable or disable birdseye view for this camera"
+    },
+    "restream": {
+      "label": "Enable RTSP Restream",
+      "tooltip": "Restream birdseye view via RTSP. Note: This will cause birdseye to run 24/7."
+    },
+    "width": {
+      "label": "Width",
+      "tooltip": "Width of the output resolution",
+      "value": "{{value}}px"
+    },
+    "height": {
+      "label": "Height",
+      "tooltip": "Height of the output resolution",
+      "value": "{{value}}px"
+    },
+    "quality": {
+      "label": "Quality",
+      "tooltip": "Encoding quality (1-31). Lower values are higher quality but use more CPU.",
+      "value": "Quality: {{value}}"
+    },
+    "mode": {
+      "label": "Display Mode",
+      "tooltip": "Choose when cameras are shown in birdseye view",
+      "options": {
+        "objects": "Show when objects detected",
+        "motion": "Show when motion detected",
+        "continuous": "Show all cameras always"
+      }
+    },
+    "inactivity_threshold": {
+      "label": "Inactivity Threshold",
+      "tooltip": "Number of seconds without activity before hiding a camera",
+      "value": "{{value}} seconds"
+    },
+    "layout": {
+      "title": "Layout Settings",
+      "scaling_factor": {
+        "label": "Scaling Factor",
+        "tooltip": "Adjust the size of cameras in the layout (1.0-5.0)",
+        "value": "{{value}}x"
+      },
+      "max_cameras": {
+        "label": "Maximum Cameras",
+        "tooltip": "Maximum number of cameras to show at once",
+        "placeholder": "Show all cameras"
+      }
+    }
+  },
+  "mqtt": {
+    "title": "MQTT Settings",
+    "enabled": {
+      "label": "Enable MQTT",
+      "tooltip": "Enable or disable MQTT snapshot publishing for this camera"
+    },
+    "timestamp": {
+      "label": "Show Timestamp",
+      "tooltip": "Print timestamp on MQTT snapshots"
+    },
+    "bounding_box": {
+      "label": "Show Bounding Box",
+      "tooltip": "Draw object bounding box on MQTT snapshots"
+    },
+    "crop": {
+      "label": "Crop to Object",
+      "tooltip": "Crop MQTT snapshots to focus on the detected object"
+    },
+    "height": {
+      "label": "Height",
+      "tooltip": "Height to resize MQTT snapshots to",
+      "value": "{{value}}px"
+    },
+    "quality": {
+      "label": "JPEG Quality",
+      "tooltip": "Quality of the JPEG compression for MQTT snapshots",
+      "value": "{{value}}%"
+    },
+    "required_zones": {
+      "label": "Required Zones",
+      "tooltip": "Only publish MQTT messages for objects in these zones",
+      "placeholder": "zone1,zone2,zone3"
+    }
+  },
+  "onvif": {
+    "title": "ONVIF/PTZ Settings",
+    "info": "ONVIF is required for PTZ control. Check your camera's documentation for ONVIF support.",
+    "connection": {
+      "title": "Connection Settings",
+      "host": {
+        "label": "Host",
+        "tooltip": "IP address or hostname of your camera",
+        "placeholder": "192.168.1.100"
+      },
+      "port": {
+        "label": "Port",
+        "tooltip": "ONVIF service port (usually 8000)",
+        "placeholder": "8000"
+      },
+      "user": {
+        "label": "Username",
+        "tooltip": "ONVIF username (some cameras require admin)",
+        "placeholder": "admin"
+      },
+      "password": {
+        "label": "Password",
+        "tooltip": "ONVIF password",
+        "placeholder": "••••••••"
+      },
+      "tls_insecure": {
+        "label": "Skip TLS Verification",
+        "tooltip": "Skip TLS certificate verification from the ONVIF server"
+      },
+      "ignore_time_mismatch": {
+        "label": "Ignore Time Mismatch",
+        "tooltip": "Ignore time synchronization issues between camera and server"
+      }
+    },
+    "autotracking": {
+      "title": "Autotracking Settings",
+      "enabled": {
+        "label": "Enable Autotracking",
+        "tooltip": "Automatically track moving objects by moving the camera"
+      },
+      "calibrate_on_startup": {
+        "label": "Calibrate on Startup",
+        "tooltip": "Calibrate camera movement on startup. Disable after first calibration."
+      },
+      "zooming": {
+        "label": "Zoom Mode",
+        "tooltip": "Choose how to handle zoom during autotracking",
+        "options": {
+          "disabled": "Disabled (pan/tilt only)",
+          "absolute": "Absolute (most cameras)",
+          "relative": "Relative (concurrent movement)"
+        }
+      },
+      "zoom_factor": {
+        "label": "Zoom Factor",
+        "tooltip": "How much to zoom in on tracked objects (0.1-0.75). Higher values zoom more but may lose tracking.",
+        "value": "{{value}}x"
+      },
+      "required_zones": {
+        "label": "Required Zones",
+        "tooltip": "Only track objects that enter these zones",
+        "placeholder": "zone1,zone2,zone3",
+        "available": "Available zones"
+      },
+      "return_preset": {
+        "label": "Return Preset",
+        "tooltip": "ONVIF preset name to return to when tracking ends",
+        "placeholder": "home"
+      },
+      "timeout": {
+        "label": "Return Timeout",
+        "tooltip": "Seconds to wait before returning to preset position",
+        "value": "{{value}} seconds"
+      }
+    }
+  },
+  "genai": {
+    "title": "Generative AI",
+    "enabled": {
+      "label": "Enable AI Descriptions",
+      "tooltip": "Enable AI-generated descriptions for detected objects"
+    },
+    "provider": {
+      "label": "AI Provider",
+      "tooltip": "Choose which AI service to use for generating descriptions",
+      "options": {
+        "ollama": "Ollama (Local)",
+        "gemini": "Google Gemini",
+        "openai": "OpenAI"
+      }
+    },
+    "api_key": {
+      "label": "API Key",
+      "tooltip": "API key for Gemini or OpenAI",
+      "placeholder": "Enter your API key"
+    },
+    "base_url": {
+      "label": "Base URL",
+      "tooltip": "Base URL for Ollama or OpenAI-compatible API",
+      "placeholder": "http://localhost:11434"
+    },
+    "prompt": {
+      "label": "Default Prompt",
+      "tooltip": "Default prompt for generating descriptions",
+      "placeholder": "Describe the {label} in the sequence of images with as much detail as possible. Do not describe the background.",
+      "variables": "Available variables"
+    },
+    "object_prompts": {
+      "title": "Object-Specific Prompts",
+      "tooltip": "Custom prompts for specific object types",
+      "placeholder": "Enter a custom prompt for this object type",
+      "add": "Add Object Prompt"
+    },
+    "objects": {
+      "label": "Objects to Describe",
+      "tooltip": "Which object types should have AI descriptions generated",
+      "placeholder": "person,car,dog",
+      "available": "Available objects"
+    },
+    "required_zones": {
+      "label": "Required Zones",
+      "tooltip": "Only generate descriptions for objects in these zones",
+      "placeholder": "zone1,zone2,zone3",
+      "available": "Available zones"
+    },
+    "debug_save_thumbnails": {
+      "label": "Save Debug Thumbnails",
+      "tooltip": "Save thumbnails sent to AI for review/debugging"
+    }
   }
 }
