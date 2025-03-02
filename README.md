@@ -9,13 +9,13 @@ This project is in early alpha development and is currently:
 - Missing some planned features
 - Subject to significant UI/UX changes
 
-A professional desktop application for managing Frigate NVR configurations through an intuitive graphical interface. Built with modern web technologies and designed for reliability and ease of use.
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Development Status](https://img.shields.io/badge/Status-Alpha-red)](https://github.com/your-org/frigate-config-gui)
 [![Platform](https://img.shields.io/badge/Platform-Linux-green)](https://flathub.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.0-blue)](https://reactjs.org/)
+
+A professional desktop application for managing Frigate NVR configurations through an intuitive graphical interface. Built with modern web technologies and designed for reliability and ease of use.
 
 <!-- 
 Release checklist badge (add when available on Flathub):
