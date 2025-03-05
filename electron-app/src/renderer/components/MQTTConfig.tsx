@@ -50,7 +50,7 @@ export default function MQTTConfig({ config, onChange }: Props) {
                 required
                 label="Host"
                 value={defaultConfig.host}
-                onChange={(e) => handleChange('host', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('host', e.target.value)}
                 placeholder="mqtt.local"
                 helperText="MQTT broker hostname or IP address"
               />
@@ -61,7 +61,7 @@ export default function MQTTConfig({ config, onChange }: Props) {
                 type="number"
                 label="Port"
                 value={defaultConfig.port || ''}
-                onChange={(e) => handleChange('port', parseInt(e.target.value, 10))}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('port', parseInt(e.target.value, 10))}
                 placeholder="1883"
                 helperText="MQTT broker port (default: 1883)"
               />
@@ -71,7 +71,7 @@ export default function MQTTConfig({ config, onChange }: Props) {
                 fullWidth
                 label="Username"
                 value={defaultConfig.user || ''}
-                onChange={(e) => handleChange('user', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('user', e.target.value)}
                 helperText="MQTT username (optional)"
               />
             </Grid>
@@ -81,7 +81,7 @@ export default function MQTTConfig({ config, onChange }: Props) {
                 type="password"
                 label="Password"
                 value={defaultConfig.password || ''}
-                onChange={(e) => handleChange('password', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('password', e.target.value)}
                 helperText="MQTT password (optional)"
               />
             </Grid>
@@ -90,7 +90,7 @@ export default function MQTTConfig({ config, onChange }: Props) {
                 fullWidth
                 label="Topic Prefix"
                 value={defaultConfig.topic_prefix || ''}
-                onChange={(e) => handleChange('topic_prefix', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('topic_prefix', e.target.value)}
                 placeholder="frigate"
                 helperText="MQTT topic prefix (default: frigate)"
               />
@@ -100,7 +100,7 @@ export default function MQTTConfig({ config, onChange }: Props) {
                 fullWidth
                 label="Client ID"
                 value={defaultConfig.client_id || ''}
-                onChange={(e) => handleChange('client_id', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('client_id', e.target.value)}
                 helperText="MQTT client ID (optional)"
               />
             </Grid>

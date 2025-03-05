@@ -103,7 +103,7 @@ export default function CameraConfig({ config, onChange }: Props) {
             fullWidth
             label="New Camera Name"
             value={newCameraName}
-            onChange={(e) => setNewCameraName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewCameraName(e.target.value)}
             placeholder="Enter camera name"
           />
         </Grid>
@@ -154,7 +154,7 @@ export default function CameraConfig({ config, onChange }: Props) {
                                 fullWidth
                                 label="Path"
                                 value={input.path}
-                                onChange={(e) => handleInputChange(cameraName, index, 'path', e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(cameraName, index, 'path', e.target.value)}
                                 placeholder="rtsp://username:password@camera-ip:554/stream"
                               />
                             </Grid>
@@ -163,7 +163,7 @@ export default function CameraConfig({ config, onChange }: Props) {
                                 fullWidth
                                 label="Roles (comma-separated)"
                                 value={input.roles.join(',')}
-                                onChange={(e) => handleInputChange(cameraName, index, 'roles', e.target.value.split(',').map(r => r.trim()))}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(cameraName, index, 'roles', e.target.value.split(',').map((r: string) => r.trim()))}
                                 placeholder="detect, record"
                                 helperText="Available roles: detect, record, rtmp"
                               />
