@@ -78,10 +78,13 @@ For detailed build instructions, see our [Build Guide](docs/dev/building.md).
 
 ## Documentation
 
+All documentation is available in the [docs](docs/index.md) directory:
+
 - [User Guide](docs/user/README.md)
 - [Developer Documentation](docs/dev/README.md)
-- [Contributing Guidelines](CONTRIBUTING.md)
-- [Technical Specifications](SPECIFICATIONS.md)
+- [Contributing Guidelines](docs/contributing.md) (also available in [root directory](CONTRIBUTING.md))
+- [Technical Specifications](docs/specifications.md) (also available in [root directory](SPECIFICATIONS.md))
+- [Examples](docs/examples/README.md)
 
 ## Contributing
 
