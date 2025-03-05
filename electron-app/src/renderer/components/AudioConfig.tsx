@@ -52,7 +52,7 @@ export default function AudioConfig({ config, onChange }: Props) {
                 control={
                   <Switch
                     checked={defaultConfig.enabled}
-                    onChange={(e) => handleChange('enabled', e.target.checked)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('enabled', e.target.checked)}
                   />
                 }
                 label="Enable Audio Detection"
@@ -63,7 +63,7 @@ export default function AudioConfig({ config, onChange }: Props) {
                 fullWidth
                 label="Device"
                 value={defaultConfig.device || ''}
-                onChange={(e) => handleChange('device', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('device', e.target.value)}
                 placeholder="default"
                 helperText="Audio input device (default: 'default')"
                 disabled={!defaultConfig.enabled}
@@ -75,7 +75,7 @@ export default function AudioConfig({ config, onChange }: Props) {
                 type="number"
                 label="Threshold"
                 value={defaultConfig.threshold || ''}
-                onChange={(e) => handleChange('threshold', parseFloat(e.target.value))}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('threshold', parseFloat(e.target.value))}
                 inputProps={{
                   step: 0.1,
                   min: 0,
@@ -92,7 +92,7 @@ export default function AudioConfig({ config, onChange }: Props) {
                 type="number"
                 label="Duration"
                 value={defaultConfig.duration || ''}
-                onChange={(e) => handleChange('duration', parseFloat(e.target.value))}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('duration', parseFloat(e.target.value))}
                 inputProps={{
                   step: 0.1,
                   min: 0
