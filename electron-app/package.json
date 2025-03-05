@@ -47,7 +47,7 @@
     "@types/testing-library__react": "^10.0.1",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
-    "@vitejs/plugin-react": "^4.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^8.2.2",
     "electron": "^27.1.2",
     "electron-builder": "^24.6.4",
