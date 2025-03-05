@@ -103,7 +103,6 @@ This project follows Test-Driven Development (TDD) practices and uses modern too
 ## Updates and Maintenance
 
 - Updates are distributed through Flathub
-- Automatic update checks are built-in
 
 ## License
 
