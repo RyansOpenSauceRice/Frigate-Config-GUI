@@ -32,6 +32,14 @@ NC='\033[0m'
 # Debug mode
 : "${DEBUG:=false}"  # Set to true to show debug info even on success
 : "${FORCE_DOWNLOAD:=false}"  # Set to true to force download of Node.js tarball
+: "${FLATPAK_USER_MODE:=false}"  # Set to true to use --user flag for flatpak commands
+
+# Set flatpak user flag if in user mode
+FLATPAK_USER_FLAG=""
+if [ "$FLATPAK_USER_MODE" = "true" ]; then
+  FLATPAK_USER_FLAG="--user"
+  echo "Running in user mode, will use '$FLATPAK_USER_FLAG' for flatpak commands"
+fi
 
 # Function to check dependencies
 check_dependencies() {
