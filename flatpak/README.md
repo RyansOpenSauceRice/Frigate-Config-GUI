@@ -28,6 +28,29 @@ flatpak install flathub org.kde.Platform//6.5 org.kde.Sdk//6.5
 
 ## Building the Flatpak
 
+### Using the Build Scripts (Recommended)
+
+We provide two build scripts for convenience:
+
+1. All-in-one build script (builds both app and Flatpak):
+```bash
+# From the project root
+./tools/build-all.sh
+
+# To build only the Flatpak
+./tools/build-all.sh --flatpak-only
+```
+
+2. Flatpak-specific build script:
+```bash
+# From the project root
+./tools/build.sh
+```
+
+### Manual Build
+
+If you prefer to build manually:
+
 1. Build the application:
 ```bash
 flatpak-builder --force-clean build-dir com.frigateNVR.ConfigGUI.yml

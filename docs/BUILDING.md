@@ -2,6 +2,23 @@
 
 This document describes how to build the Frigate Config GUI application.
 
+## All-in-One Build Script
+
+For convenience, we provide a comprehensive build script that handles all prerequisites and builds both the app and Flatpak package:
+
+```bash
+./tools/build-all.sh
+```
+
+The script supports several options:
+- `--app-only`: Build only the Electron app
+- `--flatpak-only`: Build only the Flatpak package
+- `--dev`: Start development environment
+
+Environment variables:
+- `DEBUG=true`: Show detailed debug information
+- `FORCE_DOWNLOAD=true`: Force re-download of Node.js tarball for Flatpak
+
 ## Development Build
 
 For local development and testing:
