@@ -220,8 +220,47 @@ check_node_version() {
     return 1
   fi
   
-  local current_version=$(node --version | cut -d 'v' -f 2)
-  local major_version=$(echo "$current_version" | cut -d '.' -f 1)
+  # Try to get Node.js version, capturing any errors
+  local node_version_output
+  local node_version_exit_code
+  node_version_output=$(node --version 2>&1) || node_version_exit_code=$?
+  
+  # Check if there was an error running node --version
+  if [ -n "$node_version_exit_code" ]; then
+    print_warning "Error running Node.js: $node_version_output"
+    print_warning "This might indicate a problem with your Node.js installation."
+    
+    # Check for common issues
+    if echo "$node_version_output" | grep -q "symbol lookup error"; then
+      print_warning "Detected symbol lookup error in Node.js library."
+      print_warning "This is often caused by incompatible Node.js installations or library conflicts."
+      print_warning "Recommended fix: Try reinstalling Node.js using your distribution's package manager."
+      print_warning "For Fedora: sudo dnf remove nodejs && sudo dnf install nodejs"
+      print_warning "For Ubuntu/Debian: sudo apt remove nodejs && sudo apt install nodejs"
+      print_warning "Alternatively, consider using Node Version Manager (nvm): https://github.com/nvm-sh/nvm"
+    fi
+    
+    return 1
+  fi
+  
+  # If we got here, node --version worked, so extract the version
+  local current_version=$(echo "$node_version_output" | cut -d 'v' -f 2)
+  
+  # Check if current_version is empty or not a valid version
+  if [ -z "$current_version" ]; then
+    print_warning "Could not determine Node.js version. Output was: $node_version_output"
+    return 1
+  fi
+  
+  # Extract major version, handling potential format issues
+  local major_version
+  major_version=$(echo "$current_version" | cut -d '.' -f 1)
+  
+  # Check if major_version is a number
+  if ! echo "$major_version" | grep -q '^[0-9]\+$'; then
+    print_warning "Invalid Node.js version format: $current_version"
+    return 1
+  fi
   
   if [ "$major_version" -lt "$NODE_VERSION" ]; then
     print_warning "Node.js version $current_version is too old. Version $NODE_VERSION.x or later is required."
@@ -239,7 +278,30 @@ check_npm() {
     return 1
   fi
   
-  print_success "npm is installed"
+  # Try to get npm version, capturing any errors
+  local npm_version_output
+  local npm_version_exit_code
+  npm_version_output=$(npm --version 2>&1) || npm_version_exit_code=$?
+  
+  # Check if there was an error running npm --version
+  if [ -n "$npm_version_exit_code" ]; then
+    print_warning "Error running npm: $npm_version_output"
+    print_warning "This might indicate a problem with your npm installation."
+    
+    # Check for common issues
+    if echo "$npm_version_output" | grep -q "symbol lookup error"; then
+      print_warning "Detected symbol lookup error in npm library."
+      print_warning "This is often caused by incompatible Node.js/npm installations or library conflicts."
+      print_warning "Recommended fix: Try reinstalling Node.js and npm using your distribution's package manager."
+      print_warning "For Fedora: sudo dnf remove nodejs npm && sudo dnf install nodejs npm"
+      print_warning "For Ubuntu/Debian: sudo apt remove nodejs npm && sudo apt install nodejs npm"
+      print_warning "Alternatively, consider using Node Version Manager (nvm): https://github.com/nvm-sh/nvm"
+    fi
+    
+    return 1
+  fi
+  
+  print_success "npm version $npm_version_output is installed"
   return 0
 }
 
@@ -327,16 +389,41 @@ build_electron_app() {
   
   # Install dependencies
   print_warning "Installing dependencies..."
-  npm ci
+  if ! npm ci; then
+    print_error "Failed to install dependencies with 'npm ci'. Error details above."
+    print_warning "This might be caused by:"
+    print_warning "1. Node.js/npm installation issues (symbol lookup errors)"
+    print_warning "2. Missing system dependencies"
+    print_warning "3. Network connectivity problems"
+    print_warning ""
+    print_warning "Recommended fixes:"
+    print_warning "- Try reinstalling Node.js and npm: sudo dnf remove nodejs npm && sudo dnf install nodejs npm"
+    print_warning "- Consider using Node Version Manager (nvm): https://github.com/nvm-sh/nvm"
+    print_warning "- Check your internet connection"
+    print_warning ""
+    print_warning "For Fedora users experiencing 'symbol lookup error: undefined symbol: sqlite3session_attach':"
+    print_warning "This is a known issue with some Node.js packages on Fedora. Try these solutions:"
+    print_warning "1. Install Node.js from the official NodeSource repository:"
+    print_warning "   https://github.com/nodesource/distributions#rpm"
+    print_warning "2. Use Node Version Manager (nvm) instead of the system Node.js:"
+    print_warning "   https://github.com/nvm-sh/nvm#installing-and-updating"
+    exit 1
+  fi
   
   # Build the app
   print_warning "Building the application..."
-  npm run build
+  if ! npm run build; then
+    print_error "Failed to build the application with 'npm run build'. Error details above."
+    exit 1
+  fi
   
   # Build Electron packages
   print_warning "Building Electron packages..."
   cd electron-app
-  npm run package
+  if ! npm run package; then
+    print_error "Failed to build Electron packages with 'npm run package'. Error details above."
+    exit 1
+  fi
   
   print_success "Electron app built successfully"
   print_warning "Electron packages are available in: $PROJECT_ROOT/electron-app/dist"
@@ -418,6 +505,90 @@ print_debug_info() {
   echo "- FORCE_DOWNLOAD: $FORCE_DOWNLOAD"
 }
 
+# Function to check for and fix Node.js installation issues
+check_nodejs_installation_issues() {
+  print_section "Checking for Node.js Installation Issues"
+  
+  # Check specifically for Fedora with the sqlite3session_attach error
+  if [ "$OS_NAME" = "fedora" ]; then
+    # Try to run a simple Node.js command
+    if ! node -e "console.log('Node.js test')" 2>/dev/null; then
+      local error_output
+      error_output=$(node -e "console.log('Node.js test')" 2>&1 || true)
+      
+      if echo "$error_output" | grep -q "symbol lookup error" && echo "$error_output" | grep -q "sqlite3session_attach"; then
+        print_warning "Detected the 'sqlite3session_attach' symbol lookup error on Fedora."
+        print_warning "This is a known issue with the Fedora Node.js package."
+        print_warning ""
+        print_warning "Would you like to install Node.js from the NodeSource repository to fix this issue?"
+        print_warning "This will require sudo access and will modify your system packages."
+        print_warning ""
+        print_warning "Options:"
+        print_warning "1. Install Node.js from NodeSource (recommended)"
+        print_warning "2. Install Node Version Manager (nvm)"
+        print_warning "3. Skip and continue anyway (build will likely fail)"
+        print_warning ""
+        
+        # Ask for user input
+        echo -n "Enter your choice (1-3): "
+        read -r choice
+        
+        case "$choice" in
+          1)
+            print_warning "Installing Node.js from NodeSource repository..."
+            if ! available curl; then
+              print_error "curl is required to install Node.js from NodeSource. Please install curl first."
+            fi
+            
+            # Install NodeSource repository and Node.js
+            print_warning "Downloading NodeSource setup script..."
+            if curl -fsSL https://rpm.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh; then
+              print_warning "Running NodeSource setup script (requires sudo)..."
+              if sudo bash /tmp/nodesource_setup.sh; then
+                print_warning "Installing Node.js from NodeSource repository..."
+                if sudo dnf install -y nodejs; then
+                  print_success "Node.js from NodeSource repository installed successfully!"
+                  # Verify installation
+                  if node -e "console.log('Node.js test')" 2>/dev/null; then
+                    print_success "Node.js is now working correctly!"
+                  else
+                    print_error "Node.js installation completed, but there are still issues. Please try option 2 (nvm) instead."
+                  fi
+                else
+                  print_error "Failed to install Node.js from NodeSource repository."
+                fi
+              else
+                print_error "Failed to run NodeSource setup script."
+              fi
+              rm -f /tmp/nodesource_setup.sh
+            else
+              print_error "Failed to download NodeSource setup script."
+            fi
+            ;;
+          
+          2)
+            print_warning "Installing Node Version Manager (nvm)..."
+            print_warning "Please follow the instructions at: https://github.com/nvm-sh/nvm#installing-and-updating"
+            print_warning "After installing nvm, run:"
+            print_warning "  nvm install 20"
+            print_warning "  nvm use 20"
+            print_warning "Then try running this script again."
+            exit 0
+            ;;
+          
+          3)
+            print_warning "Skipping Node.js installation fix. Build will likely fail."
+            ;;
+          
+          *)
+            print_error "Invalid choice. Please run the script again and select a valid option (1-3)."
+            ;;
+        esac
+      fi
+    fi
+  fi
+}
+
 # Main function
 main() {
   print_section "Frigate Config GUI Build Script"
@@ -447,6 +618,9 @@ main() {
   if [ "$DEBUG" = "true" ]; then
     print_debug_info
   fi
+  
+  # Check for Node.js installation issues
+  check_nodejs_installation_issues
   
   # Check prerequisites
   print_section "Checking Prerequisites"
