@@ -58,20 +58,43 @@ For detailed instructions, see our [Installation Guide](docs/user/installation.m
 
 ### Building from Source
 
+#### Quick Build (Recommended)
+
+We provide a comprehensive build script that handles all prerequisites and builds both the app and Flatpak package:
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-org/frigate-config-gui.git
    cd frigate-config-gui
    ```
 
-2. Install dependencies:
+2. Run the build script:
    ```bash
-   npm install
+   ./tools/build-all.sh
    ```
 
-3. Build the application:
+The script supports several options:
+- `--app-only`: Build only the Electron app
+- `--flatpak-only`: Build only the Flatpak package
+- `--dev`: Start development environment
+
+#### Manual Build
+
+If you prefer to build manually:
+
+1. Install dependencies:
+   ```bash
+   npm ci
+   ```
+
+2. Build the application:
    ```bash
    npm run build
+   ```
+
+3. For Flatpak, use the dedicated script:
+   ```bash
+   ./tools/build.sh
    ```
 
 For detailed build instructions, see our [Build Guide](docs/dev/building.md).
