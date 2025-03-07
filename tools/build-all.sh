@@ -418,6 +418,90 @@ print_debug_info() {
   echo "- FORCE_DOWNLOAD: $FORCE_DOWNLOAD"
 }
 
+# Function to check for and fix Node.js installation issues
+check_nodejs_installation_issues() {
+  print_section "Checking for Node.js Installation Issues"
+  
+  # Check specifically for Fedora with the sqlite3session_attach error
+  if [ "$OS_NAME" = "fedora" ]; then
+    # Try to run a simple Node.js command
+    if ! node -e "console.log('Node.js test')" 2>/dev/null; then
+      local error_output
+      error_output=$(node -e "console.log('Node.js test')" 2>&1 || true)
+      
+      if echo "$error_output" | grep -q "symbol lookup error" && echo "$error_output" | grep -q "sqlite3session_attach"; then
+        print_warning "Detected the 'sqlite3session_attach' symbol lookup error on Fedora."
+        print_warning "This is a known issue with the Fedora Node.js package."
+        print_warning ""
+        print_warning "Would you like to install Node.js from the NodeSource repository to fix this issue?"
+        print_warning "This will require sudo access and will modify your system packages."
+        print_warning ""
+        print_warning "Options:"
+        print_warning "1. Install Node.js from NodeSource (recommended)"
+        print_warning "2. Install Node Version Manager (nvm)"
+        print_warning "3. Skip and continue anyway (build will likely fail)"
+        print_warning ""
+        
+        # Ask for user input
+        echo -n "Enter your choice (1-3): "
+        read -r choice
+        
+        case "$choice" in
+          1)
+            print_warning "Installing Node.js from NodeSource repository..."
+            if ! available curl; then
+              print_error "curl is required to install Node.js from NodeSource. Please install curl first."
+            fi
+            
+            # Install NodeSource repository and Node.js
+            print_warning "Downloading NodeSource setup script..."
+            if curl -fsSL https://rpm.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh; then
+              print_warning "Running NodeSource setup script (requires sudo)..."
+              if sudo bash /tmp/nodesource_setup.sh; then
+                print_warning "Installing Node.js from NodeSource repository..."
+                if sudo dnf install -y nodejs; then
+                  print_success "Node.js from NodeSource repository installed successfully!"
+                  # Verify installation
+                  if node -e "console.log('Node.js test')" 2>/dev/null; then
+                    print_success "Node.js is now working correctly!"
+                  else
+                    print_error "Node.js installation completed, but there are still issues. Please try option 2 (nvm) instead."
+                  fi
+                else
+                  print_error "Failed to install Node.js from NodeSource repository."
+                fi
+              else
+                print_error "Failed to run NodeSource setup script."
+              fi
+              rm -f /tmp/nodesource_setup.sh
+            else
+              print_error "Failed to download NodeSource setup script."
+            fi
+            ;;
+          
+          2)
+            print_warning "Installing Node Version Manager (nvm)..."
+            print_warning "Please follow the instructions at: https://github.com/nvm-sh/nvm#installing-and-updating"
+            print_warning "After installing nvm, run:"
+            print_warning "  nvm install 20"
+            print_warning "  nvm use 20"
+            print_warning "Then try running this script again."
+            exit 0
+            ;;
+          
+          3)
+            print_warning "Skipping Node.js installation fix. Build will likely fail."
+            ;;
+          
+          *)
+            print_error "Invalid choice. Please run the script again and select a valid option (1-3)."
+            ;;
+        esac
+      fi
+    fi
+  fi
+}
+
 # Main function
 main() {
   print_section "Frigate Config GUI Build Script"
@@ -447,6 +531,9 @@ main() {
   if [ "$DEBUG" = "true" ]; then
     print_debug_info
   fi
+  
+  # Check for Node.js installation issues
+  check_nodejs_installation_issues
   
   # Check prerequisites
   print_section "Checking Prerequisites"
