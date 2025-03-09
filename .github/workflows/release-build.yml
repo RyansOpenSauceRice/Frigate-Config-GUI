@@ -1,8 +1,10 @@
 name: Release Build
 
 on:
-  release:
-    types: [created]
+  workflow_dispatch:  # Allow manual trigger
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags
 
 jobs:
   flatpak:
@@ -24,12 +26,20 @@ jobs:
           bundle: frigate-config-gui.flatpak
           manifest-path: flatpak/com.frigateNVR.ConfigGUI.yml
           cache-key: flatpak-builder-${{ github.sha }}
-      - name: Upload Flatpak bundle
+      - name: Upload Flatpak bundle as artifact
         uses: actions/upload-artifact@v4
         with:
           name: flatpak-bundle
           path: frigate-config-gui.flatpak
           retention-days: 7
+          
+      - name: Upload Flatpak to release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: frigate-config-gui.flatpak
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   electron:
     name: "Electron Build"
