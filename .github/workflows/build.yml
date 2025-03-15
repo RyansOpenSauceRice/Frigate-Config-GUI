@@ -1,12 +1,14 @@
 name: build
 
 on:
+  workflow_dispatch:
   pull_request:
     branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+  workflow_dispatch:
     steps:
       - uses: actions/checkout@v4
       - name: Build
@@ -15,12 +17,14 @@ EOF > .github/workflows/build.yml
 name: build
 
 on:
+  workflow_dispatch:
   pull_request:
     branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+  workflow_dispatch:
     steps:
       - uses: actions/checkout@v4
       - name: Build
