@@ -6,6 +6,7 @@ on:
     paths:
       - 'package.json'
       - '.github/workflows/version-validation.yml'
+  workflow_dispatch:
 
 jobs:
   validate-version:
