@@ -2,6 +2,7 @@ name: version-formatExpected
 
 on:
   workflow_dispatch:
+  workflow_dispatch:
   pull_request:
     branches: [main]
     paths:
@@ -13,7 +14,9 @@ on:
 jobs:
   validate-version:
   workflow_dispatch:
+  workflow_dispatch:
     runs-on: ubuntu-latest
+  workflow_dispatch:
   workflow_dispatch:
     steps:
       - uses: actions/checkout@v4
