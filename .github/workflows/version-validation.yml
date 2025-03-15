@@ -1,26 +1,17 @@
-name: version-formatExpected
+name: Version Format Validation
 
 on:
-  workflow_dispatch:
-  workflow_dispatch:
   workflow_dispatch:
   pull_request:
     branches: [main]
     paths:
       - 'package.json'
       - '.github/workflows/version-validation.yml'
-  workflow_dispatch:
 
-    timeout-minutes: 1
 jobs:
   validate-version:
-  workflow_dispatch:
-  workflow_dispatch:
-  workflow_dispatch:
     runs-on: ubuntu-latest
-  workflow_dispatch:
-  workflow_dispatch:
-  workflow_dispatch:
+    timeout-minutes: 1
     steps:
       - uses: actions/checkout@v4
       - name: Validate version format
