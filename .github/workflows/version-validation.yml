@@ -8,6 +8,7 @@ on:
       - '.github/workflows/version-validation.yml'
   workflow_dispatch:
 
+    timeout-minutes: 1
 jobs:
   validate-version:
     runs-on: ubuntu-latest
