@@ -12,6 +12,9 @@ This project is in early alpha development and is currently:
 A professional desktop application for managing Frigate NVR configurations through an intuitive graphical interface. Built with modern web technologies and designed for reliability and ease of use.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://github.com/RyansOpenSauceRice/Frigate-Config-GUI/actions/workflows/build.yml/badge.svg)](https://github.com/RyansOpenSauceRice/Frigate-Config-GUI/actions/workflows/build.yml)
+[![Flatpak Build](https://github.com/RyansOpenSauceRice/Frigate-Config-GUI/actions/workflows/build-flatpak.yml/badge.svg)](https://github.com/RyansOpenSauceRice/Frigate-Config-GUI/actions/workflows/build-flatpak.yml)
+[![Release](https://github.com/RyansOpenSauceRice/Frigate-Config-GUI/actions/workflows/release-build.yml/badge.svg)](https://github.com/RyansOpenSauceRice/Frigate-Config-GUI/actions/workflows/release-build.yml)
 [![Development Status](https://img.shields.io/badge/Status-Alpha-red)](https://github.com/your-org/frigate-config-gui)
 [![Platform](https://img.shields.io/badge/Platform-Linux-green)](https://flathub.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
