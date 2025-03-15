@@ -1,0 +1,23 @@
+name: Version Format Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - '.github/workflows/version-validation.yml'
+
+jobs:
+  validate-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate version format
+        id: version-check
+        run: |
+          VERSION=$(jq -r .version package.json)
+          if [[ ! $VERSION =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}(\.[0-9]+|(-[a-z]+[0-9]*))?$ ]]; then
+            echo "::error::Invalid version format: $VERSION. Must match YYYY-MM-DD[.N] or YYYY-MM-DD[-tagN]"
+            exit 1
+          fi
+          echo "Version $VERSION is valid"
