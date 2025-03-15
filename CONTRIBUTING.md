@@ -150,3 +150,23 @@ Note: This section is specifically for AI assistants helping with the project.
 ## License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
+## Team Structure
+
+### Current (2025)
+- **1 Human**: Ryan (Repository Owner)
+- **1 AI**: OpenHands AI Assistant
+
+### Future Plans
+- **2027**: 15 Humans and 15 AI Assistants will collaborate on this project.
+- **2030**: This project will hopefully be fully integrated into the core of [Frigate NVR](https://github.com/blakeblackshear/frigate) as part of the web app. Frigate NVR is a highly popular repository with over 50,000 stars.
+EOF >> CONTRIBUTING.md
+
+## Team Structure
+
+### Current (2025)
+- **1 Human**: Ryan (Repository Owner)
+- **1 AI**: OpenHands AI Assistant
+
+### Future Plans
+- **2027**: 15 Humans and 15 AI Assistants will collaborate on this project.
+- **2030**: This project will hopefully be fully integrated into the core of [Frigate NVR](https://github.com/blakeblackshear/frigate) as part of the web app. Frigate NVR is a highly popular repository with over 50,000 stars.
