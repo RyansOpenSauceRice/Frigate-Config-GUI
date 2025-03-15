@@ -2,14 +2,12 @@ name: build
 
 on:
   workflow_dispatch:
-  workflow_dispatch:
   pull_request:
     branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-  workflow_dispatch:
     steps:
       - uses: actions/checkout@v4
       - name: Build
@@ -19,14 +17,12 @@ name: build
 
 on:
   workflow_dispatch:
-  workflow_dispatch:
   pull_request:
     branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-  workflow_dispatch:
     steps:
       - uses: actions/checkout@v4
       - name: Build
