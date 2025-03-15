@@ -50,6 +50,22 @@ jobs:
           retention-days: 7
 
   electron-linux:
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject version
+        run: sed -i "s/"version":.*/"version": "$(date +%Y-%m-%d).${GITHUB_RUN_NUMBER}",/" package.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run electron:build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: electron-linux-${{ github.run_number }}
+          path: dist/*
+          retention-days: 7
     name: "Electron Linux"
     runs-on: ubuntu-latest
     permissions:
