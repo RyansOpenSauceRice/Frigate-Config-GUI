@@ -1,0 +1,20 @@
+name: Changelog Management
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update changelog
+        uses: stefanzweifel/changelog-version-updater@v1
+        with:
+          latest-version: ${{ github.event.release.tag_name }}
+          release-date: ${{ github.event.release.published_at }}
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "docs: Update CHANGELOG.md for ${{ github.event.release.tag_name }}"
