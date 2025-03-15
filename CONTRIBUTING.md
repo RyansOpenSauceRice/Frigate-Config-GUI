@@ -92,6 +92,30 @@ This project adheres to a Code of Conduct that all contributors are expected to 
    - Include accessibility tests
    - Test across supported languages
 
+## Continuous Integration and Deployment (CI/CD)
+
+### Workflow Overview
+- **build.yml**: Main build workflow that runs on PRs and pushes to main
+- **dev-build.yml**: Development builds for testing
+- **release-build.yml**: Production release builds
+- **build-flatpak.yml**: Flatpak packaging builds
+- **release-flatpak.yml**: Flatpak release process
+- **changelog.yml**: Automated changelog generation
+- **version-validation.yml**: Version number validation
+
+### Triggering Workflows
+Workflows can be triggered manually:
+1. Go to Actions tab
+2. Select workflow
+3. Click "Run workflow"
+4. Choose branch and options
+
+### Troubleshooting
+- Check workflow logs for errors
+- Verify dependencies are up to date
+- Ensure version numbers are valid
+- Check artifact storage limits
+
 ## Repository Cleanliness
 
 1. **File Management**
