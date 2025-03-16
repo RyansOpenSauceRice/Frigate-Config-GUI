@@ -78,8 +78,24 @@ electron-windows:
     permissions:
       contents: write
     needs: version
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject version
+        run: sed -i "s/\"version\":.*/\"version\": \"${{ needs.version.outputs.version }}\",/" package.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run electron:build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: electron-windows-${{ github.run_number }}
+          path: dist/*.exe
+          retention-days: 7
 
-electron-macos:
+  electron-macos:
     name: "Electron MacOS"
     runs-on: macos-latest
     permissions:
